@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>signup</title>
+    <link rel='stylesheet' href='/stylesheets/index.css' />
+  </head>
+  <body>
+  	<%- include partials/header %>
+  	<section class="signup">
+			<form class='add-form' action="/users/signup" method='POST'>
+		    <input type="text" name='username' placeholder="Enter username">
+		    <input type="text" name='email' placeholder="Enter your email">
+		    <input type="text" name='password' placeholder="Enter your password">
+		    <button type="submit" >Add user</button>
+		  </form>
+  	</section>
+  </body>
+</html>

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>index</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+  	<header>
+      <% if(admin) { %> 
+        <div class="header">
+          <h1><a href="/">cricFury</a></h1>
+          <a href="/users/profile/">profile</a>
+          <a href="/users/logout">logout</a>
+        </div>
+      <% } else { %>
+    		<div class="header">
+    			<h1><a href="/">cricFury</a></h1>
+    			<a href="/users/signup/">sign up</a>
+    			<a href="/users/login">login</a>
+    		</div>
+      <% } %>
+  	</header>
+  </body>
+</html>

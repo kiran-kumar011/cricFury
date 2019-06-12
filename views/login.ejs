@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>login</title>
+    <link rel='stylesheet' href='/stylesheets/index.css' />
+  </head>
+  <body>
+  	<%- include partials/header %>
+  	<section>
+  	  <div class='login-wrapper'>
+  	    <div>
+  	      <h1>login as author</h1>
+  	      <a href="/auth/google">Google+</a>
+  	    </div>
+  	    <div class="border-wrap"><div class='border'></div></div>
+  	    <form class='add-form' action="/users/login" method='POST'>
+  	      <input type="text" name='email' placeholder="Enter your email">
+  	      <input type="text" name='password' placeholder="Enter your password"> 
+  	      <button type="submit">Log in</button>
+  	    </form>
+  	  </div>
+  	  <div><a href="/users/signup"><h1>create new account</h1></a></div>
+  	</section>
+  </body>
+</html>

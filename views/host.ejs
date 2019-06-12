@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>profile</title>
+    <link rel='stylesheet' href='/stylesheets/index.css' />
+  </head>
+  <body>
+  	<%- include partials/header %>
+  	<form action="/cricket/host" method='post'>
+  		<div class='teamSelection'>
+        <% if(teams.length >= 2) { %>
+          <select  class='select' name="team1">
+            <% teams.forEach(team => { %>
+              <option value="<%= team._id %>"><%= team.teamName %></option>
+            <% }) %>
+          </select>
+          <select  class='select' name="team2">
+            <% teams.forEach(team => { %>
+              <option value="<%= team._id %>"><%= team.teamName %></option>
+            <% }) %>
+          </select>
+          <input type="text" name='ground' placeholder='ground name'>
+          <input type="text" name='overs' placeholder="overs limit">
+          <button type="submit" >submit</button>
+        <% } else { %> 
+          <select  class='select' name="team1">
+            <option value="">create the team first</option>
+          </select>
+          <select  class='select' name="team2">
+            <option value="">create the team first</option>
+          </select>
+          <input type="text" name='ground' placeholder='ground name'>
+          <input type="text" name='overs' placeholder="overs limit">
+          <button type="submit" >submit</button>
+        <% }%>
+  			
+  		</div>
+  	</form>
+  </body>
+</html>
