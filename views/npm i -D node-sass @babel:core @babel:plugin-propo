@@ -1,0 +1,1 @@
+npm i -D node-sass @babel/core @babel/plugin-proposal-class-properties @babel/plugin-transform-react-jsx @babel/plugin-transform-runtime @babel/preset-env @babel/preset-react babel-loader css-loader mini-css-extract-plugin sass-loader webpack-dev-middleware webpack-hot-middleware

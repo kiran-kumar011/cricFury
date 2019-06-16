@@ -7,6 +7,7 @@ var battingSchema = new mongoose.Schema({
 	numFours: Number,
 	numSixes: Number,
 	numStrikeRate: Number,
+	numBattingPosition: Number,
 });
 
 

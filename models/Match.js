@@ -8,7 +8,7 @@ var matchSchema = new mongoose.Schema({
 	date: Date,
 	ground: String,
 	tossWonBy: { type: mongoose.Schema.Types.ObjectId, ref: 'Team' },
-	optedTo: String,
+	optedTo: { type: String, enum: ['bat', 'bowl'] }, // bat or bowl
 	numOvers: Number,
 });
 

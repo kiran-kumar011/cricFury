@@ -9,6 +9,7 @@ var adminSchema = new mongoose.Schema({
 	strategies:[{ type:String }],
 	local: { type: Object },
 	google: { type: Object },
+	teams: [{type: mongoose.Schema.Types.ObjectId, ref: 'Team'}],
 	matches: [{type: mongoose.Schema.Types.ObjectId, ref: 'Match'}],
 	created_date: Date,
 	avatar_url: String,
@@ -25,7 +26,6 @@ adminSchema.pre('save', function(next) {
 		bcrypt.hash(user.password, salt, (err, hash) => {
 			if(err) return next(err);
 			user.password = hash;
-			console.log(hash, ',..............hashed password............');
 			next();
 		})
 	})
@@ -35,7 +35,6 @@ adminSchema.pre('save', function(next) {
 adminSchema.methods.comparePassword = function(candidatePassword, cb) {
 	bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {
 	    if(err) return cb(err);
-	    // console.log(cb(null, isMatch), '..........................is match status............');
 	    cb(null, isMatch);
 	});
 }

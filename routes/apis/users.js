@@ -1,24 +1,21 @@
 var express = require('express');
 var router = express.Router();
-var Admin = require('../models/Admin');
+var Admin = require('../../models/Admin');
 var passport = require('passport');
-var authController = require('../controllers/authenticationController');
-var userController = require('../controllers/usersController');
+var authController = require('../../controllers/authenticationController');
+var userController = require('../../controllers/usersController');
 
 
 
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
-  res.render('index');
+  res.send('respond with a resource');
 });
 
 
 // routing to login page
-router.get('/login', (req, res, next) => {
-	console.log(req.session, ',.............from get request............');
-	res.render('index');
-});
+router.get('/me', userController.localStorageTokenVerification);
 
 
 // taking the login credentials and verifying here.
@@ -27,7 +24,7 @@ router.post('/login', userController.post_loginPage);
 
 // routing to signup page.
 router.get('/signup', (req, res, next) => {
-	res.render('index');
+	res.render('signup');
 })
 
 

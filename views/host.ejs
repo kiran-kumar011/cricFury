@@ -6,7 +6,7 @@
   </head>
   <body>
   	<%- include partials/header %>
-  	<form action="/cricket/host" method='post'>
+  	<form action="/cricket/score/update" method='post'>
   		<div class='teamSelection'>
         <% if(teams.length >= 2) { %>
           <select  class='select' name="team1">
@@ -20,7 +20,16 @@
             <% }) %>
           </select>
           <input type="text" name='ground' placeholder='ground name'>
-          <input type="text" name='overs' placeholder="overs limit">
+          <input type="text" name='numOvers' placeholder="overs limit">
+          <select  class='select' name="tossWonBy">
+            <% teams.forEach(team => { %>
+              <option value="<%= team._id %>"><%= team.teamName %></option>
+            <% }) %>
+          </select>
+          <select name='optedTo' placeholder="electing to bowl or bat">
+            <option value="bat">bat</option>
+            <option value="bowl">bowl</option>
+          </select>
           <button type="submit" >submit</button>
         <% } else { %> 
           <select  class='select' name="team1">
@@ -30,7 +39,7 @@
             <option value="">create the team first</option>
           </select>
           <input type="text" name='ground' placeholder='ground name'>
-          <input type="text" name='overs' placeholder="overs limit">
+          <input type="text" name='numOvers' placeholder="overs limit">
           <button type="submit" >submit</button>
         <% }%>
   			
