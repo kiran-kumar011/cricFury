@@ -16,7 +16,7 @@ class Home extends Component {
 	componentDidMount() {
 		var token = localStorage.getItem('authToken'); 
 		if(token && !this.props.user.email) {
-			axios.get('http://localhost:3000/api/v1/users/me', 
+			axios.get('http://localhost:3000/api/v1/users/me',
 				{headers: {
 					'Authorization': `bearer ${localStorage.getItem('authToken')}` 
 				}}).then(response => {

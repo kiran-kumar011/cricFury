@@ -10,6 +10,8 @@ import LogIn from './Login';
 import SignUp from './SignUp';
 import Profile from './Profile';
 import LogOut from './Logout';
+import Team from './Team';
+import Match from './Match';
 
 
 class App extends Component {
@@ -20,6 +22,8 @@ class App extends Component {
         <Route exact path="/" component={Home} />  
         <Route path='/logout' component={LogOut} />
         <Route path='/profile' component={Profile} /> 
+        <Route path='/create/team' component={Team} />
+        <Route path='/create/match' component={Match} />  
         <Route path='/login' component={LogIn} />
         <Route path='/signup' component={SignUp} />
       </Router>

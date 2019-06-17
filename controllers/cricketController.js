@@ -11,10 +11,11 @@ exports.get_newTeam = (req, res, next) => {
 }
 
 exports.post_newTeam = (req, res, next) => {
+	console.log(req.body, '..........posted from react...');
 	Team.findOne({teamName: req.body.teamName}, (err, team) => {
 		if(err) return res.send(err);
 		if(!team) {
-			console.log('.............from team did not found...........');
+			// console.log('.............from team did not found...........');
 			var record = new Team();
 			record.teamName = req.body.teamName;
 
@@ -34,27 +35,36 @@ exports.post_newTeam = (req, res, next) => {
 						if(err) return console.log(err);
 						if(playersDoc) {
 
-							console.log(playersDoc, '..........insertmany playersDoc......');
+							// console.log(playersDoc, '..........insertmany playersDoc......');
 							var playersIds = playersDoc.map(player => {
 								return player._id;
 							});
 
 							Team.findByIdAndUpdate(team._id,{$push :{players: {$each: playersIds}}}, {new: true}, (err, team) => {
 								if(err) return res.send(err);
-								res.render('profile');
+								if(team) {
+									Team.findOne({_id: team._id}).populate('players').exec((err, newTeam) => {
+											// console.log(newTeam,'.............inside false', err)
+										if(err) return res.json({error: err});
+										if(newTeam) {
+											// console.log(newTeam,'.............inside true')
+											return res.json(newTeam);
+										}
+									})
+								}
 							})
 						}
 					})
 				}
 			})
 		} else {
-			return res.render('team');
+			return res.json({error :'team name already exists please change the name'});
 		}
 	})
 }
 
 exports.get_hostMatch = (req, res) => {
-	Team.find({}).populate('player').exec((err, teams) => {
+	Team.find({}).populate('players').exec((err, teams) => {
 		if(err) return res.status(500).send(err);
 		if(teams) {
 			console.log(teams, '/.................teams.............');
