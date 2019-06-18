@@ -12,6 +12,7 @@ import Profile from './Profile';
 import LogOut from './Logout';
 import Team from './Team';
 import Match from './Match';
+import ScoringBoard from './Scoring';
 
 
 class App extends Component {
@@ -26,6 +27,7 @@ class App extends Component {
         <Route path='/create/match' component={Match} />  
         <Route path='/login' component={LogIn} />
         <Route path='/signup' component={SignUp} />
+        <Route path='/live/update' component={ScoringBoard} />
       </Router>
     )
   }

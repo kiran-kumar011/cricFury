@@ -59,10 +59,10 @@ class Login extends Component {
 					<form onSubmit={this.submitHandler}>
 						<div className='signIn'>
 							<div className='input'>
-								<input type='text' name='email' value={this.state.email} onChange={this.handleChange} placeholder='Email'/>
+								<input className='default' type='text' name='email' value={this.state.email} onChange={this.handleChange} placeholder='Email'/>
 							</div>
 							<div className='input'>
-								<input type='password' name='password' value={this.state.password} onChange={this.handleChange} placeholder='Password'/>
+								<input className='default' type='password' name='password' value={this.state.password} onChange={this.handleChange} placeholder='Password'/>
 							</div>
 							<div>
 								<button style={{fontSize: '20px', padding: '10px 20px', borderRadius: '5px', backgroundColor:'#5cb85c', color: 'white',  marginTop:'15px', float: 'right'}}>Log In</button>

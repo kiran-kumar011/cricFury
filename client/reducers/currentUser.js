@@ -11,7 +11,7 @@ export const currentUser = (state = {}, action) => {
 	}
 }
 
-export const recentlyAddedTeam = (state = {}, action) => {
+export const recentlyAddedTeam = (state = [], action) => {
 	switch(action.type) {
 		case 'ADDED_NEW_TEAM':
 			return action.data;

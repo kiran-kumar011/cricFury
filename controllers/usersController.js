@@ -28,11 +28,11 @@ exports.post_loginPage = (req, res, next) => {
 						user: admin,
 					});
 				} else {
-					return res.send('invalid password');
+					return res.status(500).json({success: false, message: 'invalid password'});
 				}
 			})
 		} else {
-			return res.send('invalid email id')
+			return res.json({success: false, message: 'invalid email id'})
 		}
 	})
 }
@@ -88,8 +88,10 @@ exports.localStorageTokenVerification = (req, res, next) => {
 	jwt.verify(token, 'secretpassword', (err, user) => {
 		if(err) return res.status(500).json({error: err});
 		if(user) {
+
 			console.log(user);
 			Admin.findOne({email: user.email}, (err, admin) => {
+				
 				if(err) return res.status(500).json({error:err});
 				if(admin) {
 					res.json(admin);

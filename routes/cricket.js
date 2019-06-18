@@ -15,12 +15,15 @@ router.post('/new/team', cricketController.post_newTeam);
 router.get('/host/match', cricketController.get_hostMatch);
 
 
-router.post('/score/update', cricketController.post_hostmatch);
+router.post('/create/match', cricketController.post_hostMatch);
 
 
 router.get('/score/update', (req, res) => {
 	console.log(req.session.match, '.............stored.........');
 });
+
+router.post('matches/update/toss/bat/bowl', cricketController.updateTossAndOptedTo);
+
 
 router.post('/matches/innings/update', cricketController.addInningsToMatch);
 

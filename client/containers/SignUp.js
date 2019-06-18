@@ -43,13 +43,13 @@ class SignUp extends Component {
 					<p style={{color: '#5cb85c', fontWeight: '700', marginBottom: "10px"}}>Have an account?</p>
 					<form onSubmit={this.submitHandler}>
 						<div className='input'>
-							<input type='text' name='username' value={this.state.username} onChange={this.handleChange} placeholder='Username'/>
+							<input className='default' type='text' name='username' value={this.state.username} onChange={this.handleChange} placeholder='Username'/>
 						</div>
 						<div className='input'>
-							<input type='email' name='email' onChange={this.handleChange} value={this.state.email} placeholder='Email'/>
+							<input className='default' type='email' name='email' onChange={this.handleChange} value={this.state.email} placeholder='Email'/>
 						</div>
 						<div className='input'>
-							<input type='password' name='password' onChange={this.handleChange} value={this.state.password}  placeholder='Password'/>
+							<input className='default' type='password' name='password' onChange={this.handleChange} value={this.state.password}  placeholder='Password'/>
 						</div>
 						<div>
 							<button type='submit' style={{fontSize: '20px', padding: '10px 20px', borderRadius: '5px', backgroundColor:'#5cb85c', color: 'white',  marginTop:'15px', float: 'right'}}>Sign Up</button>

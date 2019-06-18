@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Nav from './Nav';
-import {Redirect} from 'react-router-dom';
+import {Redirect, Link} from 'react-router-dom';
 
 
 class Profile extends Component {
@@ -27,6 +27,8 @@ class Profile extends Component {
 			return <Redirect to='/create/team' />
 		} else if(this.state.redirect && this.state.isMatchClicked) {
 			return <Redirect to='/create/match' />
+		} else if(this.state.redirect && this.state.isUpdatingClicked) {
+			return <Redirect to='/score/update' />
 		}
 	}
 
@@ -34,11 +36,10 @@ class Profile extends Component {
 	render() {
 		return(
 			<div>
-				{this.renderRedirect()}
 				<Nav logout={this.handleLogout}/>
-				<h1 onClick={this.isTeamClicked} >create new team</h1>
-				<h1 onClick={() => this.setState({isMatchClicked: true, redirect: true})} >create new match</h1>
-				<h1 to='/update/score'>ongoing match</h1>
+				<Link to='/create/team'><h1>create new team</h1></Link>
+				<Link to='/create/match'><h1>create new match</h1></Link>
+				<Link to='/live/update'><h1>ongoing match</h1></Link>
 			</div>
 		)
 	}

@@ -64,7 +64,7 @@ exports.post_newTeam = (req, res, next) => {
 }
 
 exports.get_hostMatch = (req, res) => {
-	Team.find({}).populate('players').exec((err, teams) => {
+	Team.find({adminId: req.session.usreId}).populate('players').exec((err, teams) => {
 		if(err) return res.status(500).send(err);
 		if(teams) {
 			console.log(teams, '/.................teams.............');
@@ -74,7 +74,9 @@ exports.get_hostMatch = (req, res) => {
 	})
 }
 
-exports.post_hostmatch = (req, res) => {
+
+exports.post_hostMatch = (req, res) => {
+	console.log(req.body.headers,'.......matchid in get request......')
 	Match.findOne({ team1: req.body.team1, team2: req.body.team2 }, (err, match) => {
 		if(err) return res.send(err);
 		if(!match) {
@@ -82,9 +84,6 @@ exports.post_hostmatch = (req, res) => {
 			record.team1 = req.body.team1;
 			record.team2 = req.body.team2;
 			record.ground = req.body.ground;
-			record.tossWonBy = req.body.tossWonBy;
-			record.overs = req.body.numOvers;
-			record.optedTo = req.body.optedTo;
 
 			record.save((err, match) => {
 				if(err) return console.error(err);
@@ -94,35 +93,16 @@ exports.post_hostmatch = (req, res) => {
 
 					Admin.findByIdAndUpdate(req.session.userId, { $push: { matches: match.id}}, { new: true }, (err, admin) => {
 						if(err) return console.error(err);
-						res.json(match);
+						return res.json(match);
 					});
-					// Match.findOne({_id: match._id})
-					// .populate({
-					// 	path: 'team1',
-					// 	populate : {
-					// 		path: 'players',
-					// 		select: {playerName:1, id:1}
-					// 	}
-					// })
-					// .populate({
-					// 	path: 'team2',
-					// 	populate: {
-					// 		path: 'players',
-					// 		select: {playerName:1, id:1}
-					// 	}
-					// })
-					// .exec((err, match) => {
-					// 	if(err) return console.log(err);
-					// 	if(match) {
-					// 		console.log(req.session.matchId, '............from match.............',req.session.userId);
-					// 		res.render('update', { match });
-					// 	}
-					// })
 				}
 			})
 		}
 	})
 }
+
+
+
 
 exports.addInningsToMatch = (req, res) => {
 	console.log('check point 1', req.body);
@@ -173,36 +153,51 @@ exports.addInningsToMatch = (req, res) => {
 	})
 }
 
+
+
 exports.getMatchDetails = (req, res) => {
-	if(req.session && req.session.matchId) {
-		Match.findOne({ id: req.session.matchId })
-		.populate({
-			path: 'team1',
-			populate: {
-				path: 'players',
-				select: {playerName: 1, id:1}
-			}
-		})
-		.populate({
-			path: 'team2',
-			populate: {
-				path: 'players',
-				select: {playerName: 1, id:1}
-			}
-		})
-		.exec((err, match) => {
-			if(err) return res.json(err);
-			if(match) {
-				console.log(match,"................match in json.......");
-				res.json(match);
-			}
-		})
-	}
+	console.log(req.session.matchId, '......matchid');
+	Match.findById({ _id: req.session.matchId })
+	.populate({
+		path: 'team1',
+		populate: {
+			path: 'players',
+			select: {playerName: 1, id:1}
+		}
+	})
+	.populate({
+		path: 'team2',
+		populate: {
+			path: 'players',
+			select: {playerName: 1, id:1}
+		}
+	})
+	.exec((err, match) => {
+		if(err) return res.status(500).json({error: err});
+		if(match) {
+			console.log(match,"................match in json.......");
+			res.json(match);
+		}
+	})
 }
 
 
 
+exports.updateTossAndOptedTo = (req, res) => {
 
+	Match.findById({ _id: req.session.matchId }).exec((err, match) => {
+		if(err) return res.status(500).json({error: err});
+		match.tossWonBy = req.body.tossWonBy;
+		match.optedTo = req.body.optedTo;
+
+		match.save((err, updatedMatch) => {
+			if(err) return res.status(500).json({"error": err });
+			if(updatedMatch) {
+				res.json({match: updatedMatch});
+			}
+		})
+	})
+}
 
 
 

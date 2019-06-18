@@ -1,3 +1,6 @@
+root {
+  padding: 20px;
+}
 
 .daily-list {
   padding: 15px;
@@ -16,18 +19,23 @@
 }
 
 
-input:focus {
+
+input:focus, button:focus {
   outline: none;
 }
 
-input {
+.default {
   border: 0;
+  width: 35vw;
+  font-size: 17px;
+}
+
+.input {
   width: 36vw;
   padding: 10px 10px;
   font-size: 20px;
   border: 1px solid rgba(0,0,0,0.1);
 	margin-bottom: 10px; 
-	box-sizing: border-box;
 }
 
 
@@ -63,7 +71,10 @@ input {
 }
 
 
-
+.activeButton {
+  font-weight: 900;
+  background-color: red;
+}
 
 
 

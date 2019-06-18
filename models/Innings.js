@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 
 var inningsSchema = new mongoose.Schema({
 	matchId: { type: mongoose.Schema.Types.ObjectId, ref:'Team' },
+	numScore: Number,
 	battingTeamId: { type: mongoose.Schema.Types.ObjectId, ref:'Team' },
 	bowlingTeamId: { type: mongoose.Schema.Types.ObjectId, ref:'Team' },
 	batsmanScoreCard: [{ type: mongoose.Schema.Types.ObjectId, ref:'Batting' }],
