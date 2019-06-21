@@ -22,10 +22,10 @@ router.get('/score/update', (req, res) => {
 	console.log(req.session.match, '.............stored.........');
 });
 
-router.post('matches/update/toss/bat/bowl', cricketController.updateTossAndOptedTo);
+router.post('matches/update/toss/bat/bowl', cricketController.updateOversTossAndOptedTo);
 
 
-router.post('/matches/innings/update', cricketController.addInningsToMatch);
+// router.post('/matches/innings/update', cricketController.addInningsToMatch);
 
 
 router.get('/matches/innings/update', cricketController.getMatchDetails);

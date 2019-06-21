@@ -1,12 +1,12 @@
-root {
+#root {
   padding: 20px;
 }
+body {
+  text-transform: capitalize;
+}
 
-.daily-list {
-  padding: 15px;
-  p {
-    padding: 5px;
-  }
+p {
+  font-size: 25px;
 }
 
 // sign up page styling.
@@ -17,8 +17,6 @@ root {
   text-align: center;
   // background-color: red;
 }
-
-
 
 input:focus, button:focus {
   outline: none;
@@ -74,6 +72,98 @@ input:focus, button:focus {
 .activeButton {
   font-weight: 900;
   background-color: red;
+}
+
+
+.selectContailer {
+  // width: 30vw;
+  background-color: rgba(30, 144, 255, 0.2);
+  text-align: center;
+  margin: 0 auto;
+  padding: 20px;
+  border-radius: 10px;
+  box-sizing: border-box;
+}
+
+.updatingScore {
+  // display: block;
+  box-sizing: border-box;
+  margin: 20px;
+  background-color: rgba(0,0,0,0.05);
+  border-radius: 15px;
+  padding: 20px;
+}
+
+.updatingScoreWrapper {
+  display: flex;
+  justify-content: space-around;
+  // background-color: red;
+}
+
+
+.batsmenScoreList {
+  width: 30vw;
+  display: grid;
+  grid-template-columns: 1fr 35px 35px 35px 35px 35px;
+  grid-gap: 10px;
+}
+
+.bowlerScoreList {
+  width: 42vw;
+  display: grid;
+  grid-template-columns: 1fr 40px 40px 40px 40px 40px 40px 50px;
+  grid-gap: 10px;
+}
+
+.scoreCardWrapper {
+  // background-color: red;
+  display: flex;
+  justify-content: space-between;
+}
+
+.childScoreCardWrapper {
+  box-sizing: border-box;
+  padding: 20px;
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 10px;
+  background-color: rgba(0,0,0,0.05);
+}
+
+.overs {
+  width: 50px;
+  font-size: 20px;
+  padding: 4px;
+  border-radius: 5px;
+}
+
+.oversWrapper {
+  display: block;
+}
+.openerForm {
+  display: grid;
+  flex-directions: columns;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 50px;
+  justify-content: space-around;
+  // background-color: red;
+}
+
+.openerContainer {
+  width: 50vw;
+  text-align: center;
+  margin: 0 auto;
+}
+.openerBatsmen {
+  box-sizing: border-box;
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,0.2);
+  background-color: rgba(0,0,0,0.1);
+}
+
+.scoreCardContainer {
+  margin: 0 auto;
+  text-align: center;
 }
 
 

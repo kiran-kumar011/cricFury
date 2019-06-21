@@ -63,6 +63,8 @@ exports.post_newTeam = (req, res, next) => {
 	})
 }
 
+
+
 exports.get_hostMatch = (req, res) => {
 	Team.find({adminId: req.session.usreId}).populate('players').exec((err, teams) => {
 		if(err) return res.status(500).send(err);
@@ -76,7 +78,7 @@ exports.get_hostMatch = (req, res) => {
 
 
 exports.post_hostMatch = (req, res) => {
-	console.log(req.body.headers,'.......matchid in get request......')
+	console.log(req.body, '.......matchid in get request......');
 	Match.findOne({ team1: req.body.team1, team2: req.body.team2 }, (err, match) => {
 		if(err) return res.send(err);
 		if(!match) {
@@ -91,6 +93,36 @@ exports.post_hostMatch = (req, res) => {
 					console.log(match, '.................match document..........');
 					req.session.matchId = match._id;
 
+					Team.findByIdAndUpdate(req.body.team1, 
+						{ $push: {matchesId: match.id}}, 
+						{new: true}, 
+						(err, savedTeam1) => {
+						if(err) return res.status(500).json({error: err});
+						console.log(savedTeam1, '.................team after pushing the matchid..........');
+						savedTeam1.players.forEach(id => {
+							Player.findByIdAndUpdate(id, { $push: {numMatchesPlayed: match.id}}, {new: true}, (err, player) => {
+								if(err) return res.status(500).json({error: err});
+								console.log(player, 'team1 players pushed matches id');
+							})
+						})
+
+						Team.findByIdAndUpdate(req.body.team2, 
+							{ $push: {matchesId: match.id}}, 
+							{new: true}, 
+							(err, savedteam2) => {
+							if(err) return res.status(500).json({error: err});
+							
+							savedteam2.players.forEach(id => {
+								Player.findByIdAndUpdate(id, { $push: {numMatchesPlayed: match.id}}, {new: true}, (err, player) => {
+								if(err) return res.status(500).json({error: err});
+								console.log(player, 'team2 players, pushed matches id');
+								})
+
+							})
+
+						})
+					})
+
 					Admin.findByIdAndUpdate(req.session.userId, { $push: { matches: match.id}}, { new: true }, (err, admin) => {
 						if(err) return console.error(err);
 						return res.json(match);
@@ -100,59 +132,6 @@ exports.post_hostMatch = (req, res) => {
 		}
 	})
 }
-
-
-
-
-exports.addInningsToMatch = (req, res) => {
-	console.log('check point 1', req.body);
-
-	var matchId = req.body.matchId;
-	var tossWonBy = req.body.tossWonBy; // teamId
-	var optedTo = req.body.optedTo; // either bat or bowl
-
-	var battingTeamId, bowlingTeamId;
-
-	Match.findById(matchId).exec(function(err, match) {
-
-		// team1: 'Aus'
-		// team2: 'Ind' -> Ind (toss + bat)
-
-		if( optedTo == 'bat') {
-			battingTeamId = tossWonBy;
-			bowlingTeamId = (matchId.team1 == tossWonBy ? matchId.team2 : matchId.team1);
-		} else {
-			bowlingTeamId = tossWonBy;
-			battingTeamId = (matchId.team1 == tossWonBy ? matchId.team2 : matchId.team1);
-		}
-
-		// first innings
-		var firstInnings = new Innings({
-			matchId,
-			battingTeamId,
-			bowlingTeamId
-		});
-
-		// second inningsp
-		var secondInnings = new Innings({
-			matchId,
-			battingTeamId: firstInnings.bowlingTeamId,
-			bowlingTeamId: firstInnings.battingTeamId
-		});
-
-		firstInnings.save(function(err, savedFirstInnings) {
-			secondInnings.save(function(err, savedSecondInnings) {
-				match.firstInnings = savedSecondInnings;
-				match.secondInnings = savedSecondInnings;
-
-				match.save((err, savedMatch) => {
-					res.json({ match: savedMatch });
-				})
-			});
-		});
-	})
-}
-
 
 
 exports.getMatchDetails = (req, res) => {
@@ -183,19 +162,62 @@ exports.getMatchDetails = (req, res) => {
 
 
 
-exports.updateTossAndOptedTo = (req, res) => {
+exports.updateOversTossAndOptedTo = (req, res) => {
+console.log('check1..........heeaa........', req.session.matchId, req.body);
+	var battingTeamId= '';
+	var bowlingTeamId= '';
 
 	Match.findById({ _id: req.session.matchId }).exec((err, match) => {
 		if(err) return res.status(500).json({error: err});
-		match.tossWonBy = req.body.tossWonBy;
-		match.optedTo = req.body.optedTo;
 
-		match.save((err, updatedMatch) => {
-			if(err) return res.status(500).json({"error": err });
-			if(updatedMatch) {
-				res.json({match: updatedMatch});
-			}
-		})
+		if(req.body.tossWonBy == match.team1 && req.body.optedTo == 'bat') {
+			console.log('check2..........heeaa........');
+
+			var firstInnings = new Innings({
+				matchId : match._id,
+				battingTeamId : match.team1,
+				bowlingTeamId : match.team2,
+			});
+
+			var secondInnings = new Innings({
+				matchId : match._id,
+				battingTeamId : match.team2,
+				bowlingTeamId : match.team1,
+			});
+
+ 		} else if(req.body.tossWonBy == match.team1 && req.body.optedTo == 'bowl') {
+			console.log('check3..........heeaa........');
+
+	 		var firstInnings = new Innings({
+ 				matchId : match._id,
+				battingTeamId : match.team2,
+				bowlingTeamId : match.team1,
+	 		});
+
+	 		var secondInnings = new Innings({
+	 			matchId : match._id,
+				battingTeamId : match.team1,
+				bowlingTeamId : match.team2,
+	 		});
+	 		
+ 		}
+
+	 	firstInnings.save((err, savedFirstInnings) => {
+	 		secondInnings.save((err, savedSecondInnings) => {
+			console.log('check4..........heeaa........');
+
+	 			match.tossWonBy = req.body.tossWonBy;
+				match.optedTo = req.body.optedTo;
+				match.numOvers = req.body.overs;
+				match.firstInnings = savedFirstInnings.id;
+				match.secondInnings = savedSecondInnings.id;
+
+				match.save((err, savedMatch) => {
+					if(err) return res.status(500).json({'error': err})
+					res.json({success: true});
+				});
+	 		})
+	 	})
 	})
 }
 

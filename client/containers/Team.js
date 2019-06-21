@@ -61,22 +61,20 @@ class Team extends Component {
 			<div>
 				<Nav/>
 				<h1>hello</h1>
-				<form onSubmit={this.submitHandler}>
-					<input  type='text' name='teamName' onChange={this.addNewTeam} value={this.state.teamName} placeholder='enter team name'></input>
-
+				<form  onSubmit={this.submitHandler}>
+					<input className='input' type='text' name='teamName' onChange={this.addNewTeam} value={this.state.teamName} placeholder='enter team name'></input>
 					{
 						this.state.players.length === 11 ?  '' :
-						<input type='text' onKeyDown={this.handleKeyDown} name='players' id="player-name-input" placeholder='enter the player name'/>
-						
+						<input className='input' type='text' onKeyDown={this.handleKeyDown} name='players' id="player-name-input" placeholder='enter the player name'/>
 					}
 
 					{
-						this.state.players.length === 11 ? <button>Submit team</button> : <button onClick={this.addNewPlayer}>Add</button>
+						this.state.players.length === 11 ? <button className='button'>Submit team</button> : <button className='button' onClick={this.addNewPlayer}>Add</button>
 					}
 				</form>	
 				<div>
 					{this.state.players.map((player, i) => {
-						return <p key={i}>{player}</p>
+						return <p className='content is-large' key={i}>{player}</p>
 					})}
 				</div>
 			</div>

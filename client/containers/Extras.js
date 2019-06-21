@@ -4,11 +4,11 @@ class Extras extends Component {
 	render() {
 		const extras = ['wd', 'nb', 'b','lb', 'ot'];
 		return(
-			<div>
-				<h1>add extras</h1>
+			<div className='updatingScore'>
+				<h1 className='content is-large'>add extras</h1>
 				{
 					extras.map((str, index) => {
-						return <button key={index}>{str}</button>
+						return <button className='button is-outlined'key={index}>{str}</button>
 					})
 				}
 			</div>

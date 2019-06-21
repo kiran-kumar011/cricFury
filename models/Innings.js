@@ -2,13 +2,13 @@ var mongoose = require('mongoose');
 
 var inningsSchema = new mongoose.Schema({
 	matchId: { type: mongoose.Schema.Types.ObjectId, ref:'Team' },
-	numScore: Number,
+	numScore: {type: Number, default: 0},
 	battingTeamId: { type: mongoose.Schema.Types.ObjectId, ref:'Team' },
 	bowlingTeamId: { type: mongoose.Schema.Types.ObjectId, ref:'Team' },
-	batsmanScoreCard: [{ type: mongoose.Schema.Types.ObjectId, ref:'Batting' }],
-	bowlingScoreCard: [{ type: mongoose.Schema.Types.ObjectId, ref:'Bowling' }],
+	batsmanScoreCard: [{ type: mongoose.Schema.Types.ObjectId, ref:'BattingScoreCard' }],
+	bowlingScoreCard: [{ type: mongoose.Schema.Types.ObjectId, ref:'BowlingScoreCard' }],
 });
 
-var Innings = new mongoose.model('Innings', inningsSchema);
+var Innings = mongoose.model('Innings', inningsSchema);
 
 module.exports = Innings;

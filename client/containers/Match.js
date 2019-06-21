@@ -37,7 +37,7 @@ class Match extends Component {
 		.then(res => {
 			console.log(res);
 			localStorage.setItem('matchId', res.data._id);
-			this.setState({redirect: true, isMatchCreated: true})
+			this.setState({redirect: true, isMatchCreated: true});
 		}).catch(err => console.log(err));
 	}
 
@@ -55,10 +55,10 @@ class Match extends Component {
 		console.log(filterteam1, filterTeam2);
 
 		return(
-			<div>
+			<div className='control selectContailer container is-fluid'>
 			{this.setRedirectToScoring()}
 				<Nav />
-				<form onSubmit={this.submitTeams}>
+				<form className="select is-multiple" onSubmit={this.submitTeams}>
 					<select onChange={this.selectTeam} name="team1">
 						<option>select team1</option>
 						{
@@ -77,7 +77,7 @@ class Match extends Component {
 							})
 						}
 					</select>
-					<input type='text' onChange={this.selectTeam} name='ground' placeholder='enter the ground name' value={this.state.ground}></input>
+					<input className='input' type='text' onChange={this.selectTeam} name='ground' placeholder='enter the ground name' value={this.state.ground}></input>
 					<button type='submit'>submit</button>
 				</form>
 			</div>

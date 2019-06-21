@@ -4,12 +4,14 @@ class Wickets extends Component {
 	render() {
 		const wickets = ['bowled', 'caughtOut', 'lbw', 'runout', 'stumped'];		
 		return(
-			<div>
-				<h1>add wickets</h1>
+			<div className='updatingScore'>
+				<h1 className='content is-large'>add wickets</h1>
 				{
-					wickets.map((typ, index) => {
-						return <button key={index}>{typ}</button>
+					// <div className='buttons'>
+						wickets.map((typ, index) => {
+						return <button className='button is-outlined' key={index}>{typ}</button>
 					})
+					// </div>
 				}
 			</div>
 		)

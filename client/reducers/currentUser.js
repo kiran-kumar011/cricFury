@@ -14,7 +14,19 @@ export const currentUser = (state = {}, action) => {
 export const recentlyAddedTeam = (state = [], action) => {
 	switch(action.type) {
 		case 'ADDED_NEW_TEAM':
-			return action.data;
+			console.log('adding new team.....', action.data)
+			return [...action.data];
+		default:
+			return state;
+	}
+}
+
+
+export const addingMatchData = (state = {}, action) => {
+	switch(action.type) {
+		case "ADD_MATCH":
+			console.log('add match............', action.data);
+			return {...action.data};
 		default:
 			return state;
 	}

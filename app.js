@@ -18,11 +18,19 @@ require('./module/passport-local');
 // connect database to session.
 var MongoStore = require('connect-mongo')(session);
 
+// mongoose.connect('mongodb://localhost:27017/cricket', { useNewUrlParser: true }, (err) => {
+//   err ? console.log(err) : console.log('mongodb connected');
+// });
 
 // connecting server to database.
-mongoose.connect('mongodb://localhost:27017/cricket', { useNewUrlParser: true }, (err) => {
+mongoose.connect('mongodb://127.0.0.1:27017/cricket', { 
+  connectTimeoutMS: 1000 * 60 * 5,
+  poolSize: 10,
+  family: 4
+  }, (err, connection) => {
 	err ? console.log(err) : console.log('mongodb connected');
 });
+
 
 app.use(logger('dev'));
 

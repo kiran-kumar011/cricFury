@@ -1,30 +1,20 @@
+
 var mongoose = require('mongoose');
 
 var battingSchema = new mongoose.Schema({
 	playerId: {type: mongoose.Schema.Types.ObjectId, ref: 'Player'},
-	numRuns: Number,
-	numBallsFaced: Number,
-	numFours: Number,
-	numSixes: Number,
-	numStrikeRate: Number,
-	numBattingPosition: Number,
+	matchId: {type: mongoose.Schema.Types.ObjectId, ref: 'Match'},
+	numRuns: {type: Number, default: 0},
+	numBallsFaced: {type: Number, default: 0},
+	numFours: {type: Number, default: 0},
+	numSixes: {type: Number, default: 0},
+	isOut: {type: Boolean, default: false},
+	isBatted: {type: Boolean, default: false},
+	numStrikeRate: {type: Number, default: 0},
+	numBattingPosition: {type: Number, default: 0},
 });
 
 
-var BattingScoreCard = new mongoose.model('BattingScoreCard', battingSchema);
+var BattingScoreCard = mongoose.model('BattingScoreCard', battingSchema);
 
 module.exports = BattingScoreCard;
-
-
-// BallByBall
-/*
-{
-- matchId
-- ininggsId
-- batsmenId
-- bowlerId
-- over
-- ballnumber
-- resultType
-}
-*/
