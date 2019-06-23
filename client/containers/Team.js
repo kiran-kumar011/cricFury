@@ -73,8 +73,9 @@ class Team extends Component {
 					}
 				</form>	
 				<div>
+					<h1 className='content is-large'>added players</h1>
 					{this.state.players.map((player, i) => {
-						return <p className='content is-large' key={i}>{player}</p>
+						return <span className='content is-large playerName' key={i}>{player} {(i == 10) ? '.' : ',' }</span>
 					})}
 				</div>
 			</div>

@@ -52,14 +52,14 @@ router.post('/start/match/firstInnings', (req, res) => {
 		playerId: req.body.player1,
 		matchId: req.session.matchId,
 		numBattingPosition: 1,
-		isBatting: true
+		isBatted: true
 	});
 
 	var nonStriker = new BattingScoreCard({
 		playerId: req.body.player2,
 		matchId: req.session.matchId,
 		numBattingPosition: 2,
-		isBatting: true
+		isBatted: true
 	});
 
 	var bowler = new BowlingScoreCard({
@@ -170,9 +170,50 @@ router.get('/start/match/firstInnings', (req, res) => {
 })
 
 
+// {
+// 	success: true,
+// 	data: match
+// }
+
+// {
+// 	success: false,
+// 	message: "Update did not happen!!"
+// }
+
+
 router.post('/add/runs/firstInnings', (req, res) => {
 	console.log(req.body, 'adding runs route');
+	BattingScoreCard.findById({ _id: req.body.batsmenId}).exec((err, batsmen) => {
+		if(err) return res.status(500).json({error: err});
+
+		batsmen.numRuns = (batsmen.numRuns + req.body.run);
+		batsmen.numBallsFaced = ++batsmen.numBallsFaced;
+		batsmen.numFours = (req.body.run == 4) ?  ++batsmen.numFours : batsmen.numFours;
+		batsmen.numSixes = (req.body.run == 6) ? ++batsmen.numSixes : batsmen.numSixes;
+		batsmen.numStrikeRate = (batsmen.numRuns / batsmen.numBallsFaced) * 100;
+
+
+		batsmen.save((err, savedBatsmen) => {
+			if(err) return res.status(500).json({error: err});
+
+				BowlingScoreCard.findById({_id: req.body.bowlerId}).exec((err, bowler) => {
+					if(err) return res.status(500).json({error: err});
+					bowler.numGivenRuns = (bowler.numGivenRuns + req.body.run);
+					// bowler.numEconomy = (bowler.numGivenRuns )
+
+					bowler.save((err, savedbowler) => {
+						if(err) return res.status(500).json({error: err});
+
+						console.log(savedBatsmen, '..........savedBatsmen', savedbowler);
+						res.json({success: true});
+					})
+				})
+		})
+	})
 })
+
+
+
 module.exports = router;
 
 

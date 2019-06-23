@@ -49,9 +49,6 @@ class Update extends Component {
 		e.preventDefault();
 		console.log('............submit function call');
 		const data = {...this.state};
-		localStorage.setItem('striker', this.state.player1);
-		localStorage.setItem('nonStriker', this.state.player2);
-		localStorage.setItem('currentBowler', this.state.bowler);
 
 		this.setState({isDone: false, player1: '', player2: '', bowler: '', batsmen: ''})
 		axios.post('http://localhost:3000/api/v1/live/start/match/firstInnings', data).then(res => {
