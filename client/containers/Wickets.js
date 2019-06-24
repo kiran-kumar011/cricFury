@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 class Wickets extends Component {
+
 	render() {
 		const wickets = ['bowled', 'caughtOut', 'lbw', 'runout', 'stumped'];		
 		return(

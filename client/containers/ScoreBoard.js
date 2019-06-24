@@ -6,29 +6,55 @@ class ScoreBoard extends Component {
 
 	state = {
 		isUpdated: false,
+		runs: '',
 	}
 
 	componentDidMount = () => {
+		console.log('from ScoreBoard, mount1')
 		this.getMatchData();
 	}
+
+
+
 
 	getMatchData = () => {
 		axios.get('http://localhost:3000/api/v1/live/start/match/firstInnings')
 		.then(res => {
-			console.log(res);
+			console.log(res, 'from scorecardss');
 			this.props.dispatch({type: 'ADD_MATCH', data: res.data.match});
 			this.setState({ isUpdated: true })
 		}).catch(err => console.log(err))
 	}
 
-	handlePlayers = (e) => {
-		console.dir(e.target.id);
+	strikeRate(sr) {
+		console.log(sr, 'from scoreboard;');
+		if(sr) {
+			let arr = sr.toString().split('.');
+			let aaa = arr[1] ? arr[1].slice(0, 2) : "00";
+			console.log(arr, 'after split', arr[0], arr[1], aaa);
+			return arr[0] + '.' + aaa;
+		}
 	}
 
+
+	numEconomy(eco) {
+		var res = eco ? eco.toString().split('.') : '00'
+		var save = res[1] ? res[1].slice(0, 2) : '00';
+
+		return res[0] + '.' + save;
+	}
+
+
+	// handlePlayers = (e) => {
+	// 	console.dir(e.target);
+	// }
+
 	render() {
+
 		const {batsmanScoreCard, bowlingScoreCard, numScore, battingTeamId} = this.props.match.firstInnings;
 		const batsmenArr = batsmanScoreCard && this.state.isUpdated ? batsmanScoreCard : [];
 		const bowlersArr = bowlingScoreCard && this.state.isUpdated ? bowlingScoreCard : [];
+		console.log(batsmenArr, bowlersArr)
 		return(
 			<div>
 				<div className='scoreCardWrapper'>
@@ -50,7 +76,7 @@ class ScoreBoard extends Component {
 										<p className='content is-large'>{batsmen.numBallsFaced}</p>
 										<p className='content is-large'>{batsmen.numFours}</p>
 										<p className='content is-large'>{batsmen.numSixes}</p>
-										<p className='content is-large'>{batsmen.numStrikeRate}</p>
+										<p className='content is-large'>{this.strikeRate(batsmen.numStrikeRate)}</p>
 									</div>)
 							})
 						}
@@ -65,20 +91,19 @@ class ScoreBoard extends Component {
 							<p className='content is-large'>NB</p>
 							<p className='content is-large'>WD</p>
 							<p className='content is-large'>ECO</p>
-
 						</div>
 						{
 							bowlersArr.map((bowler, index) => {
 								return (
 									<div key={index} className='bowlerScoreList'>
-										<h1 className='content is-large' value={bowler.playerId.id}>{bowler.playerId.playerName}</h1>
+										<h1 className='content is-large'>{bowler.playerId.playerName}</h1>
 										<p className='content is-large'>{bowler.numOversBowled}</p>
 										<p className='content is-large'>{bowler.numMaiden}</p>
 										<p className='content is-large'>{bowler.numGivenRuns}</p>
 										<p className='content is-large'>{bowler.numWickets}</p>
 										<p className='content is-large'>{bowler.numNoball}</p>
 										<p className='content is-large'>{bowler.numWides}</p>
-										<p className='content is-large'>{bowler.numEconomy}</p>
+										<p className='content is-large'>{this.numEconomy(bowler.numEconomy)}</p>
 									</div>)
 							})
 						}

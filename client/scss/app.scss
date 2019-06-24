@@ -92,19 +92,23 @@ input:focus, button:focus {
   background-color: rgba(0,0,0,0.05);
   border-radius: 15px;
   padding: 20px;
+  box-shadow: 0 0 3px 1px rgba(0,0,0,0.5);
+
 }
 
 .updatingScoreWrapper {
   display: flex;
   justify-content: space-around;
   // background-color: red;
+  // box-shadow: 0 0 2px 1px rgba(0,0,0,1);
+  border-radius: 10px;
 }
 
 
 .batsmenScoreList {
   width: 30vw;
   display: grid;
-  grid-template-columns: 1fr 35px 35px 35px 35px 35px;
+  grid-template-columns: 1fr 35px 35px 35px 35px 65px;
   grid-gap: 10px;
 }
 
@@ -119,6 +123,8 @@ input:focus, button:focus {
   // background-color: red;
   display: flex;
   justify-content: space-between;
+  // box-shadow: 0 0 2px 1px rgba(0,0,0,1);
+  border-radius: 10px;
 }
 
 .childScoreCardWrapper {
@@ -127,6 +133,7 @@ input:focus, button:focus {
   border: 1px solid rgba(0,0,0,0.1);
   border-radius: 10px;
   background-color: rgba(0,0,0,0.05);
+  box-shadow: 0 0 3px 1px rgba(0,0,0,0.5);
 }
 
 .overs {
@@ -169,7 +176,9 @@ input:focus, button:focus {
 .playerName {
   padding: 20px;
 }
-
+// .inactive {
+//   display: none;
+// }
 
 
 

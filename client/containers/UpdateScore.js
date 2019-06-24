@@ -17,8 +17,10 @@ class Update extends Component {
 		batsmen: '',
 		runs: '',
 		extras: '',
-		wickets: ''
+		wickets: '',
+		balls: 0,
 	}
+
 
 	fetchMatchData = () => {
 		axios.get('http://localhost:3000/api/v1/live/match/update/firstInnings')
@@ -29,6 +31,11 @@ class Update extends Component {
 		}).catch(error => {
 			console.log(error)
 		})
+	}
+
+	getNumberOfballsBowled = (count) => {
+		console.log('balls count ', count)
+		this.setState({balls: count});
 	}
 
 	componentDidMount() {
@@ -45,6 +52,10 @@ class Update extends Component {
 		this.setState({ batsmen: this.state.batsmen });
 	}
 
+	strikeRate(sr) {
+		console.log(sr)
+	}
+
 	submitPlayers = (e) => {
 		e.preventDefault();
 		console.log('............submit function call');
@@ -57,9 +68,8 @@ class Update extends Component {
 		}).catch(err => console.log(err));
 	}
 
-	selectBowler = (e) => {
-		this.setState({bowler: e.target.value});
-	}
+
+
 
 	updatePlayersScoreCard = (e) => {
 		console.log('......runs update', e.target.value)
@@ -67,6 +77,7 @@ class Update extends Component {
 	}
 
 	render() {
+
 		const { battingTeamId, bowlingTeamId, batsmanScoreCard, numScore } = this.props.match.firstInnings;
 		const { tossWonBy , optedTo, team1, team2 } = this.props.match;
 
@@ -76,6 +87,8 @@ class Update extends Component {
 		const bowlers = bowlingTeamId && this.state.isDone ? bowlingTeamId.players : [];
 		const batsmenArr = batsmanScoreCard && this.state.isDone ? batsmanScoreCard : [];
 		const score = numScore && this.state.isDone ? numScore : 0;
+
+		console.log(bowlingTeamId, 'bowlersd team')
 		return(
 			<div>
 				<div className='control selectContailer'>
@@ -140,14 +153,24 @@ class Update extends Component {
 							</div>
 						)
 					}
+
+					{
+						// this.state.balls == 0 ? 
+						// <div>
+						// 	<h1 className='content is-large'>add new bowler</h1> 
+						// 	<select>
+						// 		<option>add bowlers</option>
+						// 	</select>
+						// </div>	
+						// : ''
+					}
 	
 					{
 						batsmenArr.length >= 2 ?
 						<div className='updatingScoreWrapper'>
 							<div className='buttons'>
-								<Runs runs={this.updatePlayersScoreCard}/>
-								<Wickets wickets={this.updatePlayersScoreCard}/>
-								<Extras extras={this.updatePlayersScoreCard}/>
+								<Runs balls={this.getNumberOfballsBowled} />
+								<Wickets />
 							</div>
 						</div>
 						:
@@ -166,3 +189,8 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps)(Update);
+
+
+
+
+

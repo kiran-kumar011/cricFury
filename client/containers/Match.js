@@ -32,7 +32,7 @@ class Match extends Component {
 	submitTeams = (e) => {
 		e.preventDefault();
 		const data = {...this.state}
-		this.setState({team1:'', team2: '', ground: ''});
+		// this.setState({team1:'', team2: '', ground: ''});
 		axios.post('http://localhost:3000/api/v1/cricket/create/match', data)
 		.then(res => {
 			console.log(res);
@@ -50,8 +50,10 @@ class Match extends Component {
 
 
 	render() {
-		const filterteam1 = (this.props.teams.length ? this.props.teams : [] ).filter((team, index) => this.state.team2 != team._id);
-		const filterTeam2 =  (this.props.teams.length ? this.props.teams : [] ).filter((team, index) => this.state.team1 != team._id);
+		let filterteam1 = (this.props.teams.length ? this.props.teams : [] ).filter((team, index) => this.state.team2 != team._id);
+		let filterTeam2 =  (this.props.teams.length ? this.props.teams : [] ).filter((team, index) => this.state.team1 != team._id);
+		// let filterteam1 = (this.props.teams.length ? this.props.teams : [] )
+		// let filterTeam2 =  (this.props.teams.length ? this.props.teams : [] )
 		console.log(filterteam1, filterTeam2);
 
 		return(

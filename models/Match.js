@@ -9,10 +9,11 @@ var matchSchema = new mongoose.Schema({
 	ground: String,
 	tossWonBy: { type: mongoose.Schema.Types.ObjectId, ref: 'Team' },
 	optedTo: { type: String, enum: ['bat', 'bowl'] }, // bat or bowl
-	numOvers: {type: Number},
+	numTotalOvers: {type: Number},
 });
 
 
 var Match = mongoose.model('Match', matchSchema);
+
 
 module.exports = Match;

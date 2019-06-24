@@ -26,7 +26,7 @@ class Scoring extends Component {
 
 	submitMatchData = (e) => {
 		e.preventDefault();
-		const data = {tossWonBy: this.state.tossWonBy, optedTo: this.state.optedTo}
+		const data = {tossWonBy: this.state.tossWonBy, optedTo: this.state.optedTo, overs: this.state.overs}
 		axios.post('http://localhost:3000/api/v1/cricket/matches/update/toss/bat/bowl', data).then(res => {
 			console.log(res)
 			res.data.success ? this.getRequestForMatchDetails() : ''

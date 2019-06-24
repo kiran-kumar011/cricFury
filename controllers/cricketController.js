@@ -79,6 +79,53 @@ exports.get_hostMatch = (req, res) => {
 
 exports.post_hostMatch = (req, res) => {
 	console.log(req.body, '.......matchid in get request......');
+
+	// var match = new Match({
+	// 	team1: req.body.team1,
+	// 	team2: req.body.team2,
+	// 	ground: req.body.ground,
+	// });
+
+	// match.save((err, savedMatch) => {
+	// 	if(err) return res.status(500).json({error: err});
+
+
+	// 	Team.findByIdAndUpdate(req.body.team1, 
+	// 		{ $push: {matchesId: match.id}}, 
+	// 		{new: true}, 
+	// 		(err, savedTeam1) => {
+	// 		if(err) return res.status(500).json({error: err});
+	// 		console.log(savedTeam1, '.................team after pushing the matchid..........');
+	// 		savedTeam1.players.forEach(id => {
+	// 			Player.findByIdAndUpdate(id, { $push: {numMatchesPlayed: match.id}}, {new: true}, (err, player) => {
+	// 				if(err) return res.status(500).json({error: err});
+	// 				console.log(player, 'team1 players pushed matches id');
+	// 			})
+	// 		})
+
+
+	// 		Team.findByIdAndUpdate(req.body.team2, 
+	// 			{ $push: {matchesId: match.id}}, 
+	// 			{new: true}, 
+	// 			(err, savedteam2) => {
+	// 			if(err) return res.status(500).json({error: err});
+				
+	// 			savedteam2.players.forEach(id => {
+	// 				Player.findByIdAndUpdate(id, { $push: {numMatchesPlayed: match.id}}, {new: true}, (err, player) => {
+	// 				if(err) return res.status(500).json({error: err});
+	// 				console.log(player, 'team2 players, pushed matches id');
+	// 				})
+	// 			})
+
+	// 			Admin.findByIdAndUpdate(req.session.userId, { $push: { matches: match.id}}, { new: true }, (err, admin) => {
+	// 				if(err) return console.error(err);
+	// 				return res.json({match:savedMatch});
+	// 			});
+
+	// })
+
+
+
 	Match.findOne({ team1: req.body.team1, team2: req.body.team2 }, (err, match) => {
 		if(err) return res.send(err);
 		if(!match) {
@@ -208,7 +255,7 @@ console.log('check1..........heeaa........', req.session.matchId, req.body);
 
 	 			match.tossWonBy = req.body.tossWonBy;
 				match.optedTo = req.body.optedTo;
-				match.numOvers = req.body.overs;
+				match.numTotalOvers = req.body.overs;
 				match.firstInnings = savedFirstInnings.id;
 				match.secondInnings = savedSecondInnings.id;
 
