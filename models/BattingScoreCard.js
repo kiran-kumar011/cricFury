@@ -4,6 +4,7 @@ var mongoose = require('mongoose');
 var battingSchema = new mongoose.Schema({
 	playerId: {type: mongoose.Schema.Types.ObjectId, ref: 'Player'},
 	matchId: {type: mongoose.Schema.Types.ObjectId, ref: 'Match'},
+	inningsId: {type: mongoose.Schema.Types.ObjectId, ref: 'Innings'},
 	numRuns: {type: Number, default: 0},
 	numBallsFaced: {type: Number, default: 0},
 	numFours: {type: Number, default: 0},

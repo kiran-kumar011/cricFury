@@ -3,6 +3,7 @@ var mongoose = require('mongoose');
 var bowlingSchema = new mongoose.Schema({
 	playerId: {type: mongoose.Schema.Types.ObjectId, ref: 'Player'},
 	matchId: {type: mongoose.Schema.Types.ObjectId, ref: 'Match'},
+	inningsId: {type: mongoose.Schema.Types.ObjectId, ref: 'Innings'},
 	numOversBowled: {type: Number, default: 0},
 	numBowlsBowled: {type: Number, default: 0},
 	numWickets: {type: Number, default: 0},

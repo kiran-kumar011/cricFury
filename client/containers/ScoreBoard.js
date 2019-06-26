@@ -7,6 +7,8 @@ class ScoreBoard extends Component {
 	state = {
 		isUpdated: false,
 		runs: '',
+		updateStriker: '',
+		isWicket: false,
 	}
 
 	componentDidMount = () => {
@@ -47,6 +49,22 @@ class ScoreBoard extends Component {
 	}
 
 
+	// handlePlayers = (e) => {
+	// 	console.dir(e.target, 'from scoreboard to select new striker');
+	// 	console.log(e.target.id, 'from scoreboard to select new striker');
+	// 	if(isWicket) {
+	// 		this.props.dispatch({type: 'WICKET', data: })
+	// 		this.setState({ updateStriker: e.target.id, isWicket: false });
+	// 	}
+	// }
+
+
+	// iswicketCheck = (boolean) => {
+	// 	console.log('check in scoreboard....', boolean);
+	// 	this.setState({ isWicket: boolean });
+	// }
+
+
 	numEconomy(eco) {
 		var res = eco ? eco.toString().split('.') : '00'
 		var save = res[1] ? res[1].slice(0, 2) : '00';
@@ -78,7 +96,7 @@ class ScoreBoard extends Component {
 							batsmenArr.map((batsmen, index) => {
 								return (
 									<div key={index} className='batsmenScoreList'>
-										<h1 className={batsmen.isOut ? 'content is-large out' : 'content is-large'} onClick={this.handlePlayers}>{batsmen.playerId.playerName}</h1>
+										<h1 className={batsmen.isOut ? 'content is-large out' : 'content is-large'} onClick={this.handlePlayers} id={batsmen._id}>{batsmen.playerId.playerName}</h1>
 										<p className='content is-large'>{batsmen.numRuns}</p>
 										<p className='content is-large'>{batsmen.numBallsFaced}</p>
 										<p className='content is-large'>{batsmen.numFours}</p>

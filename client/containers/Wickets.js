@@ -53,12 +53,13 @@ class Wickets extends Component {
 			bowlerId,
 			typeOfWicket,
 			isOverComplete,
+			inningsId: this.props.match.firstInnings._id,
 		}
 
 		axios.post('http://localhost:3000/api/v1/live/add/wickets/firstInnings', data)
 		.then(res => {
 			console.log(res);
-			this.setState({ isWicket: true,  typeOfWicket: typeOfWicket});
+			this.setState({  isWicket: true, typeOfWicket: typeOfWicket});
 			this.props.getMatchData();
 		}).catch(err => console.log(err));
 
@@ -82,6 +83,7 @@ class Wickets extends Component {
 		.then(res => {
 			console.log(res);
 			this.props.getMatchData();
+
 			this.props.wicket(this.state.typeOfWicket);
 		}).catch(err => {
 			console.log(err)
@@ -101,7 +103,7 @@ class Wickets extends Component {
 			<div>
 				<div>
 					{
-						this.state.isWicket ? 
+						this.state.isWicket && !this.props.isWicket ? 
 						<div>
 							<select onChange={this.selectNewBatsmen}>
 								{
@@ -117,6 +119,12 @@ class Wickets extends Component {
 					{
 						this.state.isSelected ? 
 						<button onClick={this.posttoAddNewBatsmen}>submit</button> : ''
+					}
+					{
+						this.props.isWicket ? 
+						<button onClick={this.props.updateWicket}>update Batsmen</button>
+						:
+						''
 					}
 				</div>
 				<div className='updatingScore'>

@@ -8,7 +8,7 @@ class Runs extends Component {
 	state = {
 		balls: JSON.parse(localStorage.getItem('ballsBowled')) || [],
 		striker: '',
-		nonStriker: localStorage.getItem('nonStriker') || '',
+		nonStriker: '',
 		currentStriker: localStorage.getItem('currentStriker') || '',
 		bowler: localStorage.getItem('currentBowler') || '',
 		inningsId: '',
@@ -26,9 +26,9 @@ class Runs extends Component {
 
  			if(this.state.balls.length == 6) {
  				this.state.balls.length = 0;
- 				this.setState({balls: this.state.balls, striker: this.state.nonStriker, nonStriker: this.state.striker, currentStriker: this.state.nonStriker, bowler: ''});
+ 				this.setState({balls: this.state.balls, striker: this.state.nonStriker, nonStriker: this.state.striker, currentStriker: this.state.nonStriker, bowler: '', isWicket: false });
  			} else {
- 				this.setState({balls: this.state.balls });
+ 				this.setState({ balls: this.state.balls });
  			}
  			
 
@@ -63,32 +63,35 @@ class Runs extends Component {
 	}
 
 
-	componentDidUpdate() {
-		console.log('componentDidUpdate')
-		var { batsmanScoreCard, bowlingScoreCard } = this.props.match.firstInnings;
 
+	componentDidUpdate() {
+		console.log('componentDidUpdate');
+
+		// this is to update the balls count in parent component...
+		this.props.balls(this.state.balls.length);
+
+		// to find the playing batsmens and bowlers in the match.
+		var { batsmanScoreCard, bowlingScoreCard, numBallsBowled } = this.props.match.firstInnings;
+
+		// to add the bowler at the begining...
 		var currentBowler = bowlingScoreCard[0]._id;
 
 		var batsmenPlaying = batsmanScoreCard.filter(player => (!player.isOut && player.isBatted)).map(playr => ({...playr, isOnStrike: false }));
 
-		console.log(batsmenPlaying, 'playing batsmen arr');
+		console.log(batsmenPlaying, 'playing batsmen arr',localStorage.getItem('newBatsmen'));
 
 		var striker = batsmenPlaying ? batsmenPlaying : [];
 
 		var nonStriker = batsmanScoreCard.filter(player => player._id != this.state.currentStriker)
 
 
-		// on refresh updating the ids of current playing batsmen.
-		// if(batsmenPlaying.length > 1) {
-		// 	this.state.nonStriker && this.state.striker ? '' : this.setState({striker: this.state.currentStriker, nonStriker: nonStriker[0]._id, inningsId: this.props.match.firstInnings._id });
-		// }
-
-		 this.state.striker ? '' : this.setState({ striker: this.state.currentStriker });
-
-		this.props.balls(this.state.balls.length);
 
 
+		// on the only condition where the currenStrike id is not available.
+		// in the case of adding first striker and nonstriker after that the curent striker id shoud be available all the time...
 		this.state.currentStriker  ? this.state.currentStriker : this.setState({striker: striker[0]._id, nonStriker: striker[1]._id, currentStriker: striker[0]._id, bowler: currentBowler});
+
+		
 	}
 
 
@@ -142,29 +145,50 @@ class Runs extends Component {
 
 
 	addingWicketsToBallsBowledArr = (type) => {
-		console.log(type,'..............................daafdafsd............');
+
+		this.state.balls.push(type);
+		if(this.state.balls.length == 6) {
+			this.state.balls.length = 0;
+			
+
+			this.setState({ balls: this.state.balls, isWicket: true });
+			console.log('after setting the setState currentStriker', striker );
+		} else {
+
+			this.setState({ balls: this.state.balls, isWicket: true });
+		}
+
+	}
+
+	updateCurrentStriker = () => {
 
 		var batsmenPlaying = this.props.match.firstInnings.batsmanScoreCard.filter(player => (!player.isOut && player.isBatted));
-
-		var striker = batsmenPlaying.filter(bats => bats._id != this.state.nonStriker);
-
-		console.log(batsmenPlaying, 'after wicket updation checking the players added', this.state.nonStriker)
-
-		var id = striker.length == 1 ? striker[0]._id : '';
-
-		console.log(id, '...............newId for striker to assign............');
-
-		// this.state.balls.push(type);
-		// if(this.state.balls.length == 6) {
-		// 	console.log(type,'..............................daafdafsd check1............')
-		// 	this.state.balls.length = 0;
 		
-		// 	this.setState({balls: this.state.balls, currentStriker: this.state.nonStriker, striker: this.state.nonStriker, nonStriker: id });
-		// 	console.log('after setting the setState currentStriker', this.state.currentStriker, this.state.nonStriker,  );
-		// } else {
-		// 	console.log(type,'..............................daafdafsd check2............')
-		// 	this.setState({ balls: this.state.balls, currentStriker: id, striker: id });
-		// }
+		console.log(batsmenPlaying, ',,,,.............batsmenPlaying')
+		var newBatsmen = '';
+		var oldNonStriker = '';
+
+
+		batsmenPlaying.forEach(btsmn => {
+			if(btsmn.playerId._id == localStorage.getItem('newBatsmen')) {
+				newBatsmen = btsmn._id;
+			} else {
+				oldNonStriker = btsmn._id;
+			}
+		});
+
+		console.log('................. from updating curentstriker', newBatsmen, oldNonStriker);
+		if(this.state.balls.length == 0) {
+			console.log('................. from updating length shoul be eqiual to zero',
+			this.state.currentStriker, this.state.nonStriker );
+			this.setState({ currentStriker: oldNonStriker, striker: oldNonStriker, nonStriker: newBatsmen, isWicket: false});
+			console.log('................. from updating length shoul be eqiual to zero',
+			this.state.currentStriker, this.state.nonStriker );
+		} else {
+			console.log('................. length should be eqiual not to zero', this.state.currentStriker, this.state.nonStriker);
+			this.setState({ currentStriker: newBatsmen, striker: newBatsmen, nonStriker: oldNonStriker, isWicket: false });
+			console.log('................. from updating curentstriker', this.state.currentStriker, this.state.nonStriker);
+		}
 
 	}
 
@@ -182,7 +206,6 @@ class Runs extends Component {
 
 		localStorage.setItem('ballsBowled', JSON.stringify(this.state.balls));
 
-		localStorage.setItem('nonStriker', this.state.nonStriker);
 
 		const scores = [0, 1, 2, 3, 4, 6];
 
@@ -219,7 +242,7 @@ class Runs extends Component {
 						}
 					</div>
 					<div>
-						<Wickets ballsArr={this.state.balls} getMatchData={this.getMatchData} wicket={this.addingWicketsToBallsBowledArr}/>
+						<Wickets updateWicket={this.updateCurrentStriker} ballsArr={this.state.balls} getMatchData={this.getMatchData} wicket={this.addingWicketsToBallsBowledArr} isWicket={this.state.isWicket}/>
 					</div>
 				</div>
 			</div>

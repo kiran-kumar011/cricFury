@@ -176,7 +176,7 @@ router.get('/start/match/firstInnings', (req, res) => {
 router.post('/add/runs/firstInnings', (req, res) => {
 	console.log(req.body, 'adding runs route');
 
-	BattingScoreCard.findById({ _id: req.body.batsmenId}).exec((err, batsmen) => {
+	BattingScoreCard.findById({ _id: req.body.batsmenId }).exec((err, batsmen) => {
 		if(err) return res.status(500).json({error: err});
 		console.log(req.body, 'adding runs route check1');
 		batsmen.numRuns = (batsmen.numRuns + req.body.run);
@@ -208,6 +208,7 @@ router.post('/add/runs/firstInnings', (req, res) => {
 
 							innings.numOversBowled = (req.body.isOverComplete) ? ++innings.numOversBowled : innings.numOversBowled;
 							innings.numScore = innings.numScore +	req.body.run;
+							innings.numBallsBowled = ++innings.numBallsBowled;
 
 							innings.save((err, savedInnings) => {
 								if(err) return res.status(500).json({error: err});
@@ -294,8 +295,24 @@ router.post('/add/wickets/firstInnings', (req, res) => {
 
 				bowler.save((err, savedBowler) => {
 					if(err) return res.status(500).json({error : err});
-					res.json({success: true})
+
 					console.log(savedBowler, '............updated bowler state');
+
+					Innings.findById(req.body.inningsId, (err, innings) => {
+						if(err) res.status(500).json({error: err});
+
+						innings.numWickets = ++innings.numWickets;
+						innings.numBallsBowled = ++innings.numBallsBowled;
+
+						innings.save((err, savedInnings) => {
+							if(err) return res.status(500).json({error: err});
+
+							console.log(savedInnings, '............updated bowler state');
+							res.json({success: true})
+
+						})
+					})
+
 				})
 			})
 		})
