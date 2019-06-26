@@ -272,6 +272,70 @@ router.post('/add/new/bowler/firstInnings', (req, res) => {
 	})
 })
 
+
+// adding wickets to the database and updating the new wicket taken and got out batsmen.
+router.post('/add/wickets/firstInnings', (req, res) => {
+	console.log(req.body, '..................from wickets route');
+	BattingScoreCard.findById(req.body.batsmenId, (err, batsmen) => {
+		if(err) return res.status(500).json({error: err});
+
+		batsmen.isOut = true;
+		batsmen.outType = req.body.typeOfWicket;
+
+		BowlingScoreCard.findById(req.body.bowlerId, (err, bowler) => {
+			if(err) return res.status(500).json({ error: err });
+
+			bowler.numWickets = ++bowler.numWickets;
+			bowler.numBowlsBowled = ++bowler.numBowlsBowled;
+
+			batsmen.save((err, savedBatsmen) => {
+				if(err) return res.status(500).json({error: err});
+				console.log(savedBatsmen, 'updated batsmen state..........');
+
+				bowler.save((err, savedBowler) => {
+					if(err) return res.status(500).json({error : err});
+					res.json({success: true})
+					console.log(savedBowler, '............updated bowler state');
+				})
+			})
+		})
+	})
+})
+
+
+
+router.post('/add/new/batsmen', (req, res) => {
+	console.log(req.body, '...............from adding new batsmen.....');
+	BattingScoreCard.findOne({playerId: req.body.playerId}, (err, batsmen) => {
+		if(err) return res.status(500).json({ error: err });
+
+		var newBatsmen = new BattingScoreCard({
+			playerId: req.body.playerId,
+			matchId: req.session.matchId,
+			numBattingPosition: req.body.position,
+			isBatted: true,
+		})
+
+		newBatsmen.save((err, savedBatsmen) => {
+			if(err) return res.status(500).json({error: err});
+			console.log(savedBatsmen, 'after saving new batsmen');
+
+			Innings.findByIdAndUpdate(req.body.inningsId, 
+				{ $push: { batsmanScoreCard: savedBatsmen._id }}, 
+				{ new : true }, (err, innings) => {
+				if(err) return res.status(500).json({error: err});
+				console.log(innings, 'new updated innings');
+				
+				res.json({success: true});
+
+			})
+
+		})
+	})
+
+})
+
+
 module.exports = router;
 
 

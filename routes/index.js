@@ -20,6 +20,7 @@ router.get('/live/update', (req, res) => {
 })
 
 
+
 router.get('/create/match', (req, res) => {
 	res.render('index')
 })
@@ -35,5 +36,10 @@ router.get('/logout', (req, res) => {
 router.get('/profile', function(req, res) {
   res.render('index');
 });
+
+// router.get('*', (req, res) => {
+// 	res.render('index')
+// })
+
 
 module.exports = router;

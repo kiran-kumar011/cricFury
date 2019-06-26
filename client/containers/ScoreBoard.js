@@ -10,7 +10,6 @@ class ScoreBoard extends Component {
 	}
 
 	componentDidMount = () => {
-		console.log('from ScoreBoard, mount1')
 		this.getMatchData();
 	}
 
@@ -20,18 +19,29 @@ class ScoreBoard extends Component {
 	getMatchData = () => {
 		axios.get('http://localhost:3000/api/v1/live/start/match/firstInnings')
 		.then(res => {
-			console.log(res, 'from scorecardss');
 			this.props.dispatch({type: 'ADD_MATCH', data: res.data.match});
+
+			var batsmenArr = res.data.match.firstInnings.batsmanScoreCard.map(batsmen => {
+				return {...batsmen, isOnstrike: false};
+			})
+
+			this.props.dispatch({type: 'ADD_BATSMENS', data: batsmenArr});
+
+			var bowlersArr = res.data.match.firstInnings.bowlingScoreCard.map(bowler => {
+				return {...bowler, isBowling: false };
+			})
+
+			this.props.dispatch({ type:'ADD_BOWLERS', data: bowlersArr });
+
+
 			this.setState({ isUpdated: true })
 		}).catch(err => console.log(err))
 	}
 
 	strikeRate(sr) {
-		console.log(sr, 'from scoreboard;');
 		if(sr) {
 			let arr = sr.toString().split('.');
 			let aaa = arr[1] ? arr[1].slice(0, 2) : "00";
-			console.log(arr, 'after split', arr[0], arr[1], aaa);
 			return arr[0] + '.' + aaa;
 		}
 	}
@@ -45,16 +55,13 @@ class ScoreBoard extends Component {
 	}
 
 
-	// handlePlayers = (e) => {
-	// 	console.dir(e.target);
-	// }
 
 	render() {
 
 		const {batsmanScoreCard, bowlingScoreCard, numScore, battingTeamId} = this.props.match.firstInnings;
 		const batsmenArr = batsmanScoreCard && this.state.isUpdated ? batsmanScoreCard : [];
 		const bowlersArr = bowlingScoreCard && this.state.isUpdated ? bowlingScoreCard : [];
-		console.log(batsmenArr, bowlersArr)
+		// console.log(batsmenArr, bowlersArr)
 		return(
 			<div>
 				<div className='scoreCardWrapper'>
@@ -71,7 +78,7 @@ class ScoreBoard extends Component {
 							batsmenArr.map((batsmen, index) => {
 								return (
 									<div key={index} className='batsmenScoreList'>
-										<h1 className='content is-large' onClick={this.handlePlayers}>{batsmen.playerId.playerName}</h1>
+										<h1 className={batsmen.isOut ? 'content is-large out' : 'content is-large'} onClick={this.handlePlayers}>{batsmen.playerId.playerName}</h1>
 										<p className='content is-large'>{batsmen.numRuns}</p>
 										<p className='content is-large'>{batsmen.numBallsFaced}</p>
 										<p className='content is-large'>{batsmen.numFours}</p>

@@ -31,3 +31,37 @@ export const addingMatchData = (state = {}, action) => {
 			return state;
 	}
 }
+
+
+export const addingBatsmen = (state = [], action) => {
+	switch(action.type) {
+		case ("ADD_BATSMENS") :
+			console.log('data in reducer for adding new batsmens', action.data);
+			return action.data;
+
+		default :
+			return state;
+	}
+}
+
+
+export const addingBowlers = (state	= [], action) => {
+	switch(action.type) {
+		case ('ADD_BOWLERS') :
+			console.log('data in reducer for adding new bowlers', action.data);
+			return action.data;
+		default : 
+			return state;
+	}
+}
+
+
+
+
+
+
+
+
+
+
+

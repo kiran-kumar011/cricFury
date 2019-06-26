@@ -10,6 +10,7 @@ var battingSchema = new mongoose.Schema({
 	numSixes: {type: Number, default: 0},
 	isOut: {type: Boolean, default: false},
 	isBatted: {type: Boolean, default: false},
+	outType: { type: String },
 	numStrikeRate: {type: Number, default: 0},
 	numBattingPosition: {type: Number, default: 0},
 });

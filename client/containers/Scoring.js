@@ -39,6 +39,7 @@ class Scoring extends Component {
 			console.log(res);
 			this.setState({matchData: res.data});
 			this.props.dispatch({type: 'ADD_MATCH', data: res.data});
+
 		}).catch(err => console.log(err));
 	}
 

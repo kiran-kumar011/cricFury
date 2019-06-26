@@ -153,24 +153,12 @@ class Update extends Component {
 							</div>
 						)
 					}
-
-					{
-						// this.state.balls == 0 ? 
-						// <div>
-						// 	<h1 className='content is-large'>add new bowler</h1> 
-						// 	<select>
-						// 		<option>add bowlers</option>
-						// 	</select>
-						// </div>	
-						// : ''
-					}
 	
 					{
 						batsmenArr.length >= 2 ?
 						<div className='updatingScoreWrapper'>
 							<div className='buttons'>
 								<Runs balls={this.getNumberOfballsBowled} />
-								<Wickets />
 							</div>
 						</div>
 						:
