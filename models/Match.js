@@ -1,10 +1,16 @@
 var mongoose = require('mongoose');
 
+/**
+ * Feedback
+ * 
+ * use timestamps
+ */
+
 var matchSchema = new mongoose.Schema({
 	team1: {type: mongoose.Schema.Types.ObjectId, ref: 'Team'},
 	team2: {type: mongoose.Schema.Types.ObjectId, ref: 'Team'},
-	firstInnings: {type: mongoose.Schema.Types.ObjectId, ref:'Innings'},
-	secondInnings: { type: mongoose.Schema.Types.ObjectId, ref:'Innings' },
+	firstInnings: {type: mongoose.Schema.Types.ObjectId, ref: 'Innings'},
+	secondInnings: { type: mongoose.Schema.Types.ObjectId, ref: 'Innings' },
 	date: Date,
 	ground: String,
 	tossWonBy: { type: mongoose.Schema.Types.ObjectId, ref: 'Team' },

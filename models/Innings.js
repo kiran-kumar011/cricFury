@@ -1,5 +1,15 @@
 var mongoose = require('mongoose');
 
+/**
+ * Feedback
+ * 
+ * matchId shouldn't refer to a Team schema. instead Match Schema
+ * numScore -> numTotalScore
+ * numWickets -> numLostWickets
+ * numBallsBowled -> numTotalBallsBowled
+ * remove numOversBowled
+ */
+
 var inningsSchema = new mongoose.Schema({
 	matchId: { type: mongoose.Schema.Types.ObjectId, ref:'Team' },
 	numScore: {type: Number, default: 0},

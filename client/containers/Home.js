@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Nav from './Nav';
 import axios from 'axios';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import Login from './Login';
 import Logout from './Logout';
 
@@ -31,10 +32,27 @@ class Home extends Component {
 	render() {
 		return(
 			<div>
-				<Nav logout={this.handleLogout}/>
+				<Nav logout={this.handleLogout} />
+				{
+					this.props.user.email ?
+						<Dashboard />
+					: 
+						<div>Homepage, before login.</div>
+				}
 			</div>	
 		)
 	}
+}
+
+
+function Dashboard () {
+	return (
+		<div>
+			<Link to="/create/team">Create New Team</Link> <br/>
+			<Link to="/create/match">Create New Match</Link> <br/>
+			<Link to="/live/update">Ongoing Match</Link> <br/>
+		</div>
+	)
 }
 
 function mapStateToProps(state) {

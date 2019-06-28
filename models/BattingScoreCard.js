@@ -1,5 +1,13 @@
-
 var mongoose = require('mongoose');
+
+/**
+ * Feedback
+ * Not now, later
+ * 
+ * bowledBy -> PlayerId
+ * fielders involved
+ */
+
 
 var battingSchema = new mongoose.Schema({
 	playerId: {type: mongoose.Schema.Types.ObjectId, ref: 'Player'},

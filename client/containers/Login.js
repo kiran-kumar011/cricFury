@@ -8,19 +8,7 @@ import {Redirect} from 'react-router-dom';
 class Login extends Component {
 	state = {
 		email: '',
-		password: '',
-		redirect: false,
-		isLoggedIn: false,
-	}
-
-	setRedirect = () => {
-		this.setState({redirect: true});
-	}
-
-	renderRedirect = () => {
-		if(this.state.redirect) {
-			return <Redirect to='/' />
-		}
+		password: ''
 	}
 
 	handleChange = (e) => {
@@ -31,17 +19,15 @@ class Login extends Component {
 	submitHandler = (e) => {
 		e.preventDefault();
 		var data = {...this.state};
-		this.setState({email: '', password: ''});
+		this.setState({ email: '', password: '' });
 		axios.post('http://localhost:3000/api/v1/users/login', data)
 		.then(response => {
 			if(response) {
 				console.log(response);
 				localStorage.setItem('authToken', response.data.token);
 
-				var data = localStorage.getItem('authToken');
-				console.log(data, '................hello');
 				this.props.dispatch({type: 'ADD_CURRENT_USER', data: response.data.user});
-				this.setState({redirect: true, isLoggedIn: true});
+				this.props.history.push('/');
 			}
 		}).catch(error => {
 			console.log(error);
@@ -51,8 +37,7 @@ class Login extends Component {
 	render() {
 		return(
 			<div>
-				{this.renderRedirect()}
-				<Nav isLoggedIn={this.state.isLoggedIn}/>
+				<Nav />
 				<div className='log-in-wrapper'>
 					<h1 style={{fontSize: '40px', paddingBottom: '20px'}}>Log In</h1>
 					<p style={{color: '#5cb85c', fontWeight: '700', marginBottom: "10px"}}>Need an account?</p>

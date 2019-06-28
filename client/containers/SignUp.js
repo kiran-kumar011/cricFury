@@ -4,7 +4,13 @@ import axios from 'axios';
 const { NavLink, Link } = require('react-router-dom');
 import {connect} from 'react-redux';
 
-
+/**
+ * Feedback
+ * 
+ * add validation in submitHandler
+ * move action to action creator.
+ * no inline css. move it to app.scss
+ */
 
 class SignUp extends Component {
 	state = {
@@ -22,8 +28,7 @@ class SignUp extends Component {
 	submitHandler = (e) => {
 		e.preventDefault();
 		const data = {...this.state};
-		this.setState({username: '', email:'', password:''});
-		console.log(this.state);
+
 		axios.post('http://localhost:3000/api/v1/users/signup', data).then(response => {
 			if(response) {
 				console.log(response);
@@ -32,6 +37,8 @@ class SignUp extends Component {
 		}).catch(error => {
 			console.log(error);
 		})
+
+		this.setState({ username: '', email: '', password: '' });
 	}
 
 	render() {

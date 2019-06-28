@@ -7,8 +7,6 @@ import App from './containers/App';
 import store from "./store";
 import './scss/app.scss';
 
-
-
 ReactDOM.render(
 	<Provider store={store}>
   	<App />

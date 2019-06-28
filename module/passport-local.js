@@ -7,12 +7,10 @@ passport.serializeUser((user, done) => {
 	done(null, user)
 })
 
-
 passport.deserializeUser((user, done) => {
 	console.log('deserializeUser/............................')
 	done(null, user);
 });
-
 
 passport.use(new localStrategy({usernameField: 'email'}, (email, password, done) => {
 	console.log(email, '.......................passport use mddleware...............');

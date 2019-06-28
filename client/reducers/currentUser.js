@@ -1,4 +1,3 @@
-
 export const currentUser = (state = {}, action) => {
 	switch(action.type) {
 		case 'ADD_CURRENT_USER':
