@@ -61,11 +61,11 @@ class Update extends Component {
 		console.log('............submit function call');
 		const data = {...this.state};
 
-		this.setState({isDone: false, player1: '', player2: '', bowler: '', batsmen: ''})
 		axios.post('http://localhost:3000/api/v1/live/start/match/firstInnings', data).then(res => {
 			console.log(res);
 			this.fetchMatchData();
 		}).catch(err => console.log(err));
+		this.setState({isDone: false, player1: '', player2: '', bowler: '', batsmen: ''})
 	}
 
 

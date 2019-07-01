@@ -18,6 +18,7 @@ exports.post_newTeam = (req, res, next) => {
 			// console.log('.............from team did not found...........');
 			var record = new Team();
 			record.teamName = req.body.teamName;
+			record.adminId = req.session.userId;
 
 			record.save((err, team) => {
 				if(err) return console.log(err); 
@@ -66,11 +67,11 @@ exports.post_newTeam = (req, res, next) => {
 
 
 exports.get_hostMatch = (req, res) => {
-	Team.find({adminId: req.session.usreId}).populate('players').exec((err, teams) => {
+	console.log(req.session.userId, '...............user id from hom req route')
+	Team.find({ adminId: req.session.userId }).populate('players').exec((err, teams) => {
 		if(err) return res.status(500).send(err);
 		if(teams) {
-			console.log(teams, '/.................teams.............');
-			console.log(req.session, '..............user id created.........');
+			console.log(teams, '..............found team');
 			res.json(teams);
 		}
 	})
@@ -210,7 +211,7 @@ exports.getMatchDetails = (req, res) => {
 
 
 exports.updateOversTossAndOptedTo = (req, res) => {
-console.log('check1..........heeaa........', req.session.matchId, req.body);
+	console.log('check1..........heeaa........', req.session.matchId, req.body);
 	var battingTeamId= '';
 	var bowlingTeamId= '';
 

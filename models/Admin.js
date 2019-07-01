@@ -3,7 +3,7 @@ var bcrypt = require('bcrypt');
 const saltRounds = 10;
 
 var adminSchema = new mongoose.Schema({
-	username: { type: String, required: true,lowercase: true },
+	name: { type: String, required: true,lowercase: true },
 	email: { type: String, required: true },
 	password: { type: String, minlength: 6 },
 	strategies:[{ type:String }],
@@ -11,9 +11,8 @@ var adminSchema = new mongoose.Schema({
 	google: { type: Object },
 	teams: [{type: mongoose.Schema.Types.ObjectId, ref: 'Team'}],
 	matches: [{type: mongoose.Schema.Types.ObjectId, ref: 'Match'}],
-	created_date: Date,
 	avatar_url: String,
-});
+}, { timestamps: true });
 
 
 // hashing a password.

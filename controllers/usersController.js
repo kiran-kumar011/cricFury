@@ -22,13 +22,18 @@ exports.post_loginPage = (req, res, next) => {
 				if(isMatch) {
 					req.session.userId = admin._id;
 					var token = jwt.sign({email: email}, 'secretpassword');
+
 					return res.status(200).json({
 						success: true,
 						token: token,
-						user: admin,
+						user : {
+							name: admin.name,
+							id: admin._id,
+							email: admin.email,
+						}
 					});
 				} else {
-					return res.status(500).json({success: false, message: 'invalid password'});
+					return res.json({success: false, message: 'invalid password'});
 				}
 			})
 		} else {
@@ -43,17 +48,16 @@ exports.get_signUpPage = (req, res, next) => {
 
 
 exports.post_signUpPage = (req, res, next) => {
-	var { email, password } = req.body;
+	var { email, password, username } = req.body;
 	Admin.findOne({email: email}, (err, admin) => {
 		if(err) return console.log(err);
 		if(!admin) {
 			var local = req.body;
 			var record = new Admin();
-			record.username = local.username;
-			record.email = local.email;
-			record.password = local.password;
+			record.name = username;
+			record.email = email;
+			record.password = password;
 			record.strategies.push('LOCAL');
-			record.created_date = new Date();
 			record.save((err, newAdmin) => {
 				if(err) {
 					return res.status(500).json({"message": 'db error from creating user asdasdads'});
@@ -94,7 +98,14 @@ exports.localStorageTokenVerification = (req, res, next) => {
 				
 				if(err) return res.status(500).json({error:err});
 				if(admin) {
-					res.json(admin);
+					res.json({
+						success: true,
+						user : {
+							name: admin.name,
+							id: admin._id,
+							email: admin.email,
+						}
+					});
 				}
 			})
 		}

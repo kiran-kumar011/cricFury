@@ -3,6 +3,8 @@ import Nav from './Nav';
 import axios from 'axios';
 import {connect} from 'react-redux';
 
+import { addNewTeam } from '../actions';
+
 
 class Team extends Component {
 
@@ -40,19 +42,11 @@ class Team extends Component {
 
 	submitHandler = (e) => {
 		e.preventDefault();
-		console.log(this.state);
 		const data = {...this.state } 
-		this.setState({players: [], teamName: '', currentPlayer:''});
-		console.log(this.state);
-		axios.post('http://localhost:3000/api/v1/cricket/new/team', data).then(response => {
-			if(response) {
-				console.log(response);
-				this.props.dispatch({type: 'ADD_NEW_TEAM', data: response.data});
-			}
 
-		}).catch(error => {
-			console.log(error);
-		})
+		this.props.dispatch(addNewTeam(data));
+		
+		this.setState({players: [], teamName: '', currentPlayer:''});
 	}
 
 	render() {
@@ -83,11 +77,7 @@ class Team extends Component {
 	}
 }
 
-// function mapStateToProps(state) {
-// 	return {
-// 		state,
-// 	}
-// }
+
 
 export default connect()(Team);
 

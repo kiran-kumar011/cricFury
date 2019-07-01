@@ -1,4 +1,5 @@
 
+
 export const currentUser = (state = {}, action) => {
 	switch(action.type) {
 		case 'ADD_CURRENT_USER':
@@ -10,6 +11,7 @@ export const currentUser = (state = {}, action) => {
 			return state;
 	}
 }
+
 
 export const recentlyAddedTeam = (state = [], action) => {
 	switch(action.type) {

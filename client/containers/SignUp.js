@@ -4,6 +4,8 @@ import axios from 'axios';
 const { NavLink, Link } = require('react-router-dom');
 import {connect} from 'react-redux';
 
+import { postNewUser } from '../actions';
+
 
 
 class SignUp extends Component {
@@ -15,23 +17,25 @@ class SignUp extends Component {
 	}
 
 	handleChange = (e) => {
-		// console.log(e);
 		this.setState({[e.target.name] : e.target.value});
 	}
 
 	submitHandler = (e) => {
 		e.preventDefault();
 		const data = {...this.state};
-		this.setState({username: '', email:'', password:''});
 		console.log(this.state);
-		axios.post('http://localhost:3000/api/v1/users/signup', data).then(response => {
-			if(response) {
-				console.log(response);
-				this.setState({ isSignedUp: true })
-			}
-		}).catch(error => {
-			console.log(error);
-		})
+
+		this.props.dispatch(postNewUser(data));
+		// axios.post('http://localhost:3000/api/v1/users/signup', data).then(response => {
+		// 	if(response) {
+		// 		console.log(response);
+		// 		this.setState({ isSignedUp: true })
+		// 	}
+		// }).catch(error => {
+		// 	console.log(error);
+		// })
+
+		this.setState({ username: '', email:'', password:'' });
 	}
 
 	render() {

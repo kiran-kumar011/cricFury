@@ -7,6 +7,8 @@ import Wickets from './Wickets';
 import UpdateScore from './UpdateScore';
 import {connect} from 'react-redux';
 
+import { getMatchDetailsBeforeToss, updateOversandToss } from '../actions';
+
 class Scoring extends Component {
 	state = {
 		matchData: null,
@@ -26,26 +28,33 @@ class Scoring extends Component {
 
 	submitMatchData = (e) => {
 		e.preventDefault();
-		const data = {tossWonBy: this.state.tossWonBy, optedTo: this.state.optedTo, overs: this.state.overs}
-		axios.post('http://localhost:3000/api/v1/cricket/matches/update/toss/bat/bowl', data).then(res => {
-			console.log(res)
-			res.data.success ? this.getRequestForMatchDetails() : ''
-		}).catch(err => console.log(err));
+		const data = {
+			tossWonBy: this.state.tossWonBy,
+			optedTo: this.state.optedTo, 
+			overs: this.state.overs
+		}
+
+		this.props.dispatch(updateOversandToss(data))
+		this.props.dispatch(getMatchDetailsBeforeToss(this.stateUpdate))
 	}
 
 
 	getRequestForMatchDetails = () => {
 		axios.get('http://localhost:3000/api/v1/cricket/matches/innings/update').then(res => {
-			console.log(res);
 			this.setState({matchData: res.data});
 			this.props.dispatch({type: 'ADD_MATCH', data: res.data});
 
 		}).catch(err => console.log(err));
 	}
 
+
+	stateUpdate = (data) => {		
+		this.setState({matchData: data})
+	}
+
 	componentDidMount = () => {
-		console.log('..........mounted scoring......')
-		this.getRequestForMatchDetails();
+
+		this.props.dispatch(getMatchDetailsBeforeToss(this.stateUpdate))
 	}
 
 

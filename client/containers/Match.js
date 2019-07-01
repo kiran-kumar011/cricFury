@@ -4,61 +4,51 @@ import axios from 'axios';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 
+import { createNewMatch, getAllTeam } from '../actions';
+ 
 class Match extends Component {
 	
 	state = {
 		team1: '',
 		team2: '',
 		ground: '',
-		isMatchCreated: false,
-		redirect: false,
 	}
 
 	selectTeam = (e) => {
-		console.dir(e.target);
 		this.setState({[e.target.name]: e.target.value})
 	}
 
 	componentDidMount = () => {
-		axios.get('http://localhost:3000/api/v1/cricket/create/match').then(response => {
-				console.log(response);
-				this.props.dispatch({type: "ADDED_NEW_TEAM", data: response.data});
-			}).catch(error => {
-				console.log(error);
-			})
+		this.props.dispatch(getAllTeam())
 	}
 
 
 	submitTeams = (e) => {
 		e.preventDefault();
 		const data = {...this.state}
-		// this.setState({team1:'', team2: '', ground: ''});
-		axios.post('http://localhost:3000/api/v1/cricket/create/match', data)
-		.then(res => {
-			console.log(res);
-			localStorage.setItem('matchId', res.data._id);
-			this.setState({redirect: true, isMatchCreated: true});
-		}).catch(err => console.log(err));
+
+		this.props.dispatch(createNewMatch(data, this.redirectToLiveUpdate));
+
+		this.setState({team1:'', team2: '', ground: ''});
 	}
 
 
-	setRedirectToScoring = () =>  {
-		if(this.state.redirect && this.state.isMatchCreated) {
-			return <Redirect to='/live/update' />
+	redirectToLiveUpdate = (data) => {
+		console.log('redirectict called after post update', )
+		if(data._id) {
+			this.props.history.push('/live/update');
 		}
 	}
+
 
 
 	render() {
 		let filterteam1 = (this.props.teams.length ? this.props.teams : [] ).filter((team, index) => this.state.team2 != team._id);
 		let filterTeam2 =  (this.props.teams.length ? this.props.teams : [] ).filter((team, index) => this.state.team1 != team._id);
-		// let filterteam1 = (this.props.teams.length ? this.props.teams : [] )
-		// let filterTeam2 =  (this.props.teams.length ? this.props.teams : [] )
-		console.log(filterteam1, filterTeam2);
+	
 
 		return(
 			<div className='control selectContailer container is-fluid'>
-			{this.setRedirectToScoring()}
 				<Nav />
 				<form className="select is-multiple" onSubmit={this.submitTeams}>
 					<select onChange={this.selectTeam} name="team1">
