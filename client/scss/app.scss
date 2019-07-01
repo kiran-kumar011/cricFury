@@ -108,19 +108,20 @@ input:focus, button:focus {
 .batsmenScoreList {
   width: 30vw;
   display: grid;
-  grid-template-columns: 1fr 35px 35px 35px 35px 65px;
+  grid-template-columns: 100px 35px 35px 35px 35px 65px;
   grid-gap: 10px;
 }
 
 .bowlerScoreList {
   width: 42vw;
   display: grid;
-  grid-template-columns: 1fr 40px 40px 40px 40px 40px 40px 50px;
+  grid-template-columns: 100px 40px 40px 40px 40px 40px 40px 50px;
   grid-gap: 10px;
 }
 
 .scoreCardWrapper {
   // background-color: red;
+  margin-top: 20px;
   display: flex;
   justify-content: space-between;
   // box-shadow: 0 0 2px 1px rgba(0,0,0,1);

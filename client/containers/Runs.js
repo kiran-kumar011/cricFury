@@ -82,10 +82,11 @@ class Runs extends Component {
 
 		var striker = batsmenPlaying ? batsmenPlaying : [];
 
-		var nonStriker = batsmanScoreCard.filter(player => player._id != this.state.currentStriker)
+		var nonStriker = batsmenPlaying.filter(player => player._id != this.state.currentStriker)
 
+		console.log(nonStriker[0]._id, '.................nonstriker onrefresh');
 
-
+		this.state.striker ? this.state.striker : this.setState({striker : this.state.currentStriker, nonStriker: nonStriker[0]._id})
 
 		// on the only condition where the currenStrike id is not available.
 		// in the case of adding first striker and nonstriker after that the curent striker id shoud be available all the time...
@@ -150,7 +151,6 @@ class Runs extends Component {
 		if(this.state.balls.length == 6) {
 			this.state.balls.length = 0;
 			
-
 			this.setState({ balls: this.state.balls, isWicket: true });
 			console.log('after setting the setState currentStriker', striker );
 		} else {

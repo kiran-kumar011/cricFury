@@ -14,7 +14,7 @@ passport.deserializeUser((user, done) => {
 });
 
 
-passport.use(new localStrategy({usernameField: 'email'}, (email, password, done) => {
+passport.use(new localStrategy({ usernameField: 'email'}, (email, password, done) => {
 	console.log(email, '.......................passport use mddleware...............');
 	Admin.findOne({email: email}, (err, user) => {
 		console.log(err, user, 'inside the findone.................');

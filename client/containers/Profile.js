@@ -16,11 +16,7 @@ class Profile extends Component {
 		this.setState({isTeamClicked: true, redirect: true});
 	}
 
-	handleLogout= () => {
-		console.log('.........handling the log out........')
-		localStorage.clear();
-		this.props.dispatch({type: "REMOVE_USER"});
-	}
+
 
 	renderRedirect = () => {
 		if(this.state.redirect && this.state.isTeamClicked) {
@@ -36,7 +32,7 @@ class Profile extends Component {
 	render() {
 		return(
 			<div>
-				<Nav logout={this.handleLogout}/>
+				<Nav />
 				<Link to='/create/team'><h1>create new team</h1></Link>
 				<Link to='/create/match'><h1>create new match</h1></Link>
 				<Link to='/live/update'><h1>ongoing match</h1></Link>

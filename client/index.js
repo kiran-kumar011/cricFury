@@ -6,6 +6,7 @@ import { Provider } from 'react-redux';
 import App from './containers/App';
 import store from "./store";
 import './scss/app.scss';
+console.log(store.getState());
 
 
 

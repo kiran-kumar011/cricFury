@@ -185,23 +185,26 @@ router.post('/add/runs/firstInnings', (req, res) => {
 		batsmen.numSixes = (req.body.run == 6) ? ++batsmen.numSixes : batsmen.numSixes;
 		batsmen.numStrikeRate = (batsmen.numRuns / batsmen.numBallsFaced) * 100;
 
-
 		batsmen.save((err, savedBatsmen) => {
 			if(err) return res.status(500).json({error: err});
 				console.log(req.body, 'adding runs route ckeck2');
 
 				BowlingScoreCard.findById({ _id: req.body.bowlerId }).exec((err, bowler) => {
-					console.log(req.body, 'adding runs route check3');
+					console.log(req.body, 'before error return  adding runs route check3', err);
 					if(err) return res.status(500).json({error: err});
 
-					bowler.numGivenRuns = (bowler.numGivenRuns + req.body.run);
+
+					bowler.numGivenRuns = (req.body.run ? ( bowler.numGivenRuns + req.body.run) : bowler.numGivenRuns);
 					bowler.numBowlsBowled = ++bowler.numBowlsBowled;
 					bowler.numOversBowled = Math.floor( bowler.numBowlsBowled / 6);
-					bowler.numEconomy = (bowler.numGivenRuns / bowler.numOversBowled);
-					bowler.save((err, savedbowler) => {
-						if(err) return res.status(500).json({error: err});
-						console.log(savedBatsmen, '..........savedBatsmen check4', savedbowler);
+					bowler.numEconomy = (bowler.numGivenRuns ? (bowler.numGivenRuns / bowler.numOversBowled) : bowler.numGivenRuns);
 
+
+					bowler.save((err, savedbowler) => {
+						console.log(req.body, ' before error return adding runs route check3...1',err);
+						if(err) return res.status(500).json({error: err});
+						console.log(req.body, ' after error return adding runs route check3...2',err);
+						
 
 						Innings.findById(req.body.inningsId, (err, innings) => {
 							if(err) return res.status(500).json({error: err});
@@ -226,8 +229,8 @@ router.post('/add/runs/firstInnings', (req, res) => {
 
 
 router.post('/add/new/bowler/firstInnings', (req, res) => {
-	console.log(req.body, '.............adding new bowler');
-	BowlingScoreCard.findOne({playerId: req.body.bowlerId}, (err, savedBowler) => {
+	console.log(req.body, '.............adding new bowler', req.session.matchId);
+	BowlingScoreCard.findOne({ playerId: req.body.bowlerId , matchId: req.session.matchId}, (err, savedBowler) => {
 		if(err) return res.status(500).json({error : err});
 		console.log('.....................findOne bowlrer after error', savedBowler)
 
@@ -269,6 +272,8 @@ router.post('/add/new/bowler/firstInnings', (req, res) => {
 					res.json({success: true});
 				})
 			})
+		} else {
+			return res.json({message:'bowler has already been added'})
 		}
 	})
 })
@@ -282,6 +287,7 @@ router.post('/add/wickets/firstInnings', (req, res) => {
 
 		batsmen.isOut = true;
 		batsmen.outType = req.body.typeOfWicket;
+		batsmen.numBallsFaced = ++batsmen.numBallsFaced;
 
 		BowlingScoreCard.findById(req.body.bowlerId, (err, bowler) => {
 			if(err) return res.status(500).json({ error: err });
@@ -323,7 +329,7 @@ router.post('/add/wickets/firstInnings', (req, res) => {
 
 router.post('/add/new/batsmen', (req, res) => {
 	console.log(req.body, '...............from adding new batsmen.....');
-	BattingScoreCard.findOne({playerId: req.body.playerId}, (err, batsmen) => {
+	BattingScoreCard.findOne({playerId: req.body.playerId, matchId: req.session.matchId}, (err, batsmen) => {
 		if(err) return res.status(500).json({ error: err });
 
 		var newBatsmen = new BattingScoreCard({
@@ -351,6 +357,23 @@ router.post('/add/new/batsmen', (req, res) => {
 	})
 
 })
+
+
+
+// update the overlimit and end game after the completions of overs.
+// inspect the score when you add dot balls...
+// number balls a bowler bowled should be updated in the scoreboard.
+// if all batsmen got out then end the game.
+// after adding new batsmen over are completing.
+// indication of batsmen on strike should be displayed.
+// indication of bowler who is bowling.
+// while adding new batsmen filter the batsmen who already played.
+// check the economy.
+// add wickets on the display 
+// add overs bowled on the display.
+// display match total overs.
+// remove select option after the bowler is added.
+// remove select option when the batsmen is added.
 
 
 module.exports = router;
