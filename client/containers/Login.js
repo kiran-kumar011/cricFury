@@ -28,7 +28,7 @@ class Login extends Component {
 		e.preventDefault();
 		var data = {...this.state};
 
-		this.props.dispatch(verifyLoggedInUser(data, this.getResponse));
+		this.props.dispatch(verifyLoggedInUser(data)).then(res => this.getResponse(res));
 		this.setState({email: '', password: ''});
 
 	}

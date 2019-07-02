@@ -24,6 +24,8 @@ class App extends Component {
     if(token && !this.props.user.email) {
       this.props.dispatch(verifyAuthToken(token));
     }
+
+    // TODO: handle case when there is no token
   }
 
   render() {

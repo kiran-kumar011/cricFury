@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import axios from 'axios';
 
-import { updateWickets } from '../actions';
+import { updateWickets, addNewBatsmen, getLiveScoreUpdate } from '../actions';
 
 class Wickets extends Component {
 
@@ -40,7 +40,7 @@ class Wickets extends Component {
 	}
 
 	postToAddNewWicket = (batsmenId, bowlerId, typeOfWicket) => {
-		
+
 		var isOverComplete = localStorage.getItem('ballsBowled').length == 0 ? true : false;
 
 		var data = {
@@ -51,7 +51,8 @@ class Wickets extends Component {
 			inningsId: this.props.match.firstInnings._id,
 		}
 
-		this.props.dispatch(updateWickets(data, this.props.getMatchData()))
+		this.props.dispatch(updateWickets(data, this.getMatchData()))
+		
 		this.setState({  isWicket: true, typeOfWicket: typeOfWicket});
 
 	}
@@ -69,17 +70,15 @@ class Wickets extends Component {
 
 		var data = { playerId: localStorage.getItem('newBatsmen'), position: length, inningsId: id }
 
-		axios.post('http://localhost:3000/api/v1/live/add/new/batsmen', data)
-		.then(res => {
-			console.log(res);
-			this.props.getMatchData();
-
-			this.props.wicket(this.state.typeOfWicket);
-		}).catch(err => {
-			console.log(err)
-		})
+		this.props.dispatch(addNewBatsmen(data, this.getMatchData));
 	}
 
+	getMatchData = () => {
+		this.props.dispatch(getLiveScoreUpdate())
+
+		this.props.wicket(this.state.typeOfWicket);
+
+	}
 
 	render() {
 
@@ -93,7 +92,7 @@ class Wickets extends Component {
 			<div>
 				<div>
 					{
-						this.state.isWicket && !this.props.isWicket ? 
+						this.state.isWicket ? 
 						<div>
 							<select onChange={this.selectNewBatsmen}>
 								{

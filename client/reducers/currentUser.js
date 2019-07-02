@@ -1,6 +1,10 @@
 
+const initialState = {
+	user: null,
+}
 
-export const currentUser = (state = {}, action) => {
+
+export const currentUser = (state = initialState, action) => {
 	switch(action.type) {
 		case 'ADD_CURRENT_USER':
 		console.log(action.data,'...........reducer data..............');

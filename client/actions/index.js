@@ -2,10 +2,12 @@ import axios from 'axios';
 
 const rootUrl = 'http://localhost:3000/api/v1';
 
+
 const setTokenToAxios = (token) => {
   const newToken = token || localStorage.getItem('authToken') || '';
   axios.defaults.headers.Authorization = newToken;
 }
+
 
 export function verifyAuthToken(token) {
 return dispatch => {
@@ -22,15 +24,26 @@ return dispatch => {
   }
 }
 
-
-export function verifyLoggedInUser(data, sendResponse) {
+export function postNewUser(data) {
   return dispatch => {
+    axios.post(`${rootUrl}/users/signup`, data)
+    .then(res => {
+      console.log(res, 'after signing up action creator');
+    }).catch(err => {
+      console.log(err);
+    })
+  }
+}
+
+
+export function verifyLoggedInUser(data) {
+  return (dispatch, getState) => new Promise((resolve, reject) => {
     axios.post(`${rootUrl}/users/login`, data)
     .then(res => {
       if(res.data.success) {
         localStorage.setItem('authToken', res.data.token);
-
-        sendResponse(res);
+        console.log(getState);
+        resolve(res);
       }
       dispatch({
         type: "ADD_CURRENT_USER",
@@ -39,7 +52,7 @@ export function verifyLoggedInUser(data, sendResponse) {
     }).catch(error => {
       console.log(error);
     })
-  }
+  })
 }
 
 
@@ -52,19 +65,6 @@ export function addNewTeam(data) {
         type: 'ADD_NEW_TEAM',
         data: res.data
       })
-    }).catch(err => {
-      console.log(err);
-    })
-  }
-}
-
-
-
-export function postNewUser(data) {
-  return dispatch => {
-    axios.post(`${rootUrl}/users/signup`, data)
-    .then(res => {
-      console.log(res, 'from action creator at posting new user');
     }).catch(err => {
       console.log(err);
     })
@@ -225,6 +225,20 @@ export function updateWickets(data, getMatchData) {
       getMatchData();
     }).catch(err => {
       console.log(err)
+    })
+  }
+}
+
+
+export function addNewBatsmen(data, getMatchData) {
+  return dispatch => {
+    axios.post(`${rootUrl}/live/add/new/batsmen`, data)
+    .then(res => {
+      console.log(res);
+
+      getMatchData();
+    }).catch(err => {
+      console.log(err);
     })
   }
 }

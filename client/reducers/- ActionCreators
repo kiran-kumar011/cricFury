@@ -1,0 +1,11 @@
+- ActionCreators
+
+
+==================
+
+- Making proper store.
+	- reducers in seperate files. initialState.
+
+- Sending right actions that reduce the store properly.
+
+- On basis of the store update, updating the UI.

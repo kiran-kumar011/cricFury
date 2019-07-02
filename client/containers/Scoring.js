@@ -34,6 +34,15 @@ class Scoring extends Component {
 			overs: this.state.overs
 		}
 
+		// TODO: Refactor it to make it such that actioncreator returns a promise 
+		// and then you can dispatch
+
+		// it should return a promise.
+		// this.props.dispatch(updateOversandToss(data)).then(() => {
+		// 	this.props.dispatch(getMatchDetailsBeforeToss());
+		// })
+
+		// dispatch an action
 		this.props.dispatch(updateOversandToss(data, this.getRequestForMatchDetails))
 	}
 
@@ -49,7 +58,6 @@ class Scoring extends Component {
 	}
 
 	componentDidMount = () => {
-
 		this.props.dispatch(getMatchDetailsBeforeToss(this.stateUpdate));
 	}
 
@@ -84,7 +92,11 @@ class Scoring extends Component {
 							<div>
 								<h1 className='content is-large'>elected to</h1>
 								<div className='buttons'>
-									<button className={this.state.isOptedToBat ? 'activeButton button': 'inactiveButton button'} onClick={() => this.setState({isOptedToBat: true, isOptedToBowl: false, optedTo: 'bat'})}>bat</button>
+									<button 
+										className={this.state.isOptedToBat ? 'activeButton button': 'inactiveButton button'}
+										onClick={() => this.setState({isOptedToBat: true, isOptedToBowl: false, optedTo: 'bat'})}>
+										bat
+									</button>
 									<button className={this.state.isOptedToBowl ? 'activeButton button': 'inactiveButton button'} onClick={() => this.setState({isOptedToBat: false, isOptedToBowl: true, optedTo: 'bowl'})}>bowl</button>
 								</div>
 							</div>
