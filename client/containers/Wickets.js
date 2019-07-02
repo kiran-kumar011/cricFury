@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import axios from 'axios';
 
+import { updateWickets } from '../actions';
+
 class Wickets extends Component {
 
 // type of wicket fell. 
@@ -19,9 +21,7 @@ class Wickets extends Component {
 	}
 
 	handlingWicket = (e) => {
-		console.log(e.target.value);
 		if(e.target.value == 'bowled' || e.target.value == 'lbw' || e.target.value == 'stumped') {
-			console.log('striker got out');
 			var { bowlingScoreCard } = this.props.match.firstInnings;
 			var id = '';
 
@@ -30,7 +30,6 @@ class Wickets extends Component {
 			bowlingScoreCard.forEach(bow => {
 				if(bow.playerId._id == localStorage.getItem('newBowler')) {
 					id = bow._id;
-					console.log('bowler from forEach after post requst', bow)
 				} 
 			})
 			this.postToAddNewWicket(localStorage.getItem('currentStriker'),  id, e.target.value);
@@ -41,13 +40,9 @@ class Wickets extends Component {
 	}
 
 	postToAddNewWicket = (batsmenId, bowlerId, typeOfWicket) => {
-		console.log(batsmenId, bowlerId, typeOfWicket, 'from posting wickerts request');
-
-
-
-
+		
 		var isOverComplete = localStorage.getItem('ballsBowled').length == 0 ? true : false;
-		console.log(isOverComplete, '..............over completed state............');
+
 		var data = {
 			batsmenId,
 			bowlerId,
@@ -56,12 +51,8 @@ class Wickets extends Component {
 			inningsId: this.props.match.firstInnings._id,
 		}
 
-		axios.post('http://localhost:3000/api/v1/live/add/wickets/firstInnings', data)
-		.then(res => {
-			console.log(res);
-			this.setState({  isWicket: true, typeOfWicket: typeOfWicket});
-			this.props.getMatchData();
-		}).catch(err => console.log(err));
+		this.props.dispatch(updateWickets(data, this.props.getMatchData()))
+		this.setState({  isWicket: true, typeOfWicket: typeOfWicket});
 
 	}
 
@@ -72,7 +63,6 @@ class Wickets extends Component {
 
 
 	posttoAddNewBatsmen = () => {
-		console.log('dasdasd');
 
 		var length = this.props.match.firstInnings.batsmanScoreCard.length + 1;
 		var id = this.props.match.firstInnings._id; 

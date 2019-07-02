@@ -4,6 +4,9 @@ import { connect } from 'react-redux';
 import Wickets from './Wickets';
 import Extras from './Extras';
 
+
+import { addRunsToServer, getLiveScoreUpdate, addNewBowlerToScoreCard } from '../actions';
+
 class Runs extends Component {
 	state = {
 		balls: JSON.parse(localStorage.getItem('ballsBowled')) || [],
@@ -32,7 +35,7 @@ class Runs extends Component {
  			}
  			
 
- 			this.postRunsToServer(run, localStorage.getItem('currentStriker'), localStorage.getItem('currentBowler'), (this.state.balls.length == 0 ? true: false));
+ 			this.postRunsToServer(run, localStorage.getItem('currentStriker'), (this.state.balls.length == 0 ? true: false));
 
  		} else {
 
@@ -47,19 +50,13 @@ class Runs extends Component {
  				this.state.balls.length = 0;
  				this.setState({balls: this.state.balls, bowler: ''});
  			}
- 			this.postRunsToServer(run, localStorage.getItem('currentStriker'), localStorage.getItem('currentBowler'), (this.state.balls.length == 0 ? true: false));
+ 			this.postRunsToServer(run, localStorage.getItem('currentStriker'), (this.state.balls.length == 0 ? true: false));
  		}
 	}
 
 
 	getMatchData = () => {
-		axios.get('http://localhost:3000/api/v1/live/start/match/firstInnings')
-		.then(res => {
-			console.log(res);
-			this.props.dispatch({type: 'ADD_MATCH', data: res.data.match});
-
-			this.setState({ isUpdated: true });
-		}).catch(err => console.log(err))
+		this.props.dispatch(getLiveScoreUpdate())
 	}
 
 
@@ -78,13 +75,11 @@ class Runs extends Component {
 
 		var batsmenPlaying = batsmanScoreCard.filter(player => (!player.isOut && player.isBatted)).map(playr => ({...playr, isOnStrike: false }));
 
-		console.log(batsmenPlaying, 'playing batsmen arr',localStorage.getItem('newBatsmen'));
 
 		var striker = batsmenPlaying ? batsmenPlaying : [];
 
 		var nonStriker = batsmenPlaying.filter(player => player._id != this.state.currentStriker)
 
-		console.log(nonStriker[0]._id, '.................nonstriker onrefresh');
 
 		this.state.striker ? this.state.striker : this.setState({striker : this.state.currentStriker, nonStriker: nonStriker[0]._id})
 
@@ -92,7 +87,6 @@ class Runs extends Component {
 		// in the case of adding first striker and nonstriker after that the curent striker id shoud be available all the time...
 		this.state.currentStriker  ? this.state.currentStriker : this.setState({striker: striker[0]._id, nonStriker: striker[1]._id, currentStriker: striker[0]._id, bowler: currentBowler});
 
-		
 	}
 
 
@@ -101,7 +95,7 @@ class Runs extends Component {
 	}
 
 
-	postRunsToServer = (run, batsmenId, bowlerId, isOverComplete) => {
+	postRunsToServer = (run, batsmenId, isOverComplete) => {
 
 		var { batsmanScoreCard, bowlingScoreCard } = this.props.match.firstInnings;
 
@@ -112,36 +106,25 @@ class Runs extends Component {
 		bowlingScoreCard.forEach(bow => {
 			if(bow.playerId._id == this.state.nextBowler) {
 				id = bow._id;
-				console.log('bowler from forEach after post requst', bow)
 			} 
 		})
+
 
 		var inningsId = this.props.match.firstInnings._id;
 
 		const data = { run, batsmenId, bowlerId: id, inningsId, isOverComplete };
 
-		axios.post('http://localhost:3000/api/v1/live/add/runs/firstInnings', data)
-		.then(res => {
-			console.log(res, 'after run update sent');
-			this.getMatchData();
-		}).catch(err => {
-			console.log(err);
-		})
+
+		this.props.dispatch(addRunsToServer(data, this.getMatchData))
 	}
 
 
 	postNewBowler = (e) => {
 		e.preventDefault();
-		console.log('postNewBowler clicked');
 		var data = { bowlerId: this.state.nextBowler, inningsId: this.props.match.firstInnings._id }
 
-		axios.post('http://localhost:3000/api/v1/live/add/new/bowler/firstInnings', data).then(res => {
-				console.log(res, 'server response afet ading new bowler');
-				this.getMatchData();
+		this.props.dispatch(addNewBowlerToScoreCard(data, this.getMatchData));
 
-		}).catch(err => {
-			console.log(err);
-		})
 	}
 
 
@@ -152,7 +135,6 @@ class Runs extends Component {
 			this.state.balls.length = 0;
 			
 			this.setState({ balls: this.state.balls, isWicket: true });
-			console.log('after setting the setState currentStriker', striker );
 		} else {
 
 			this.setState({ balls: this.state.balls, isWicket: true });
@@ -164,7 +146,6 @@ class Runs extends Component {
 
 		var batsmenPlaying = this.props.match.firstInnings.batsmanScoreCard.filter(player => (!player.isOut && player.isBatted));
 		
-		console.log(batsmenPlaying, ',,,,.............batsmenPlaying')
 		var newBatsmen = '';
 		var oldNonStriker = '';
 
@@ -177,17 +158,13 @@ class Runs extends Component {
 			}
 		});
 
-		console.log('................. from updating curentstriker', newBatsmen, oldNonStriker);
 		if(this.state.balls.length == 0) {
-			console.log('................. from updating length shoul be eqiual to zero',
-			this.state.currentStriker, this.state.nonStriker );
 			this.setState({ currentStriker: oldNonStriker, striker: oldNonStriker, nonStriker: newBatsmen, isWicket: false});
-			console.log('................. from updating length shoul be eqiual to zero',
-			this.state.currentStriker, this.state.nonStriker );
+			
 		} else {
-			console.log('................. length should be eqiual not to zero', this.state.currentStriker, this.state.nonStriker);
+			
 			this.setState({ currentStriker: newBatsmen, striker: newBatsmen, nonStriker: oldNonStriker, isWicket: false });
-			console.log('................. from updating curentstriker', this.state.currentStriker, this.state.nonStriker);
+			
 		}
 
 	}

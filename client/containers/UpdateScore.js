@@ -7,6 +7,10 @@ import { connect } from 'react-redux';
 import ScoreBoard from './ScoreBoard';
 
 
+import { getUpdatedInnings, postOpenersData } from '../actions';
+
+
+
 class Update extends Component {
 
 	state = {
@@ -22,16 +26,16 @@ class Update extends Component {
 	}
 
 
-	fetchMatchData = () => {
-		axios.get('http://localhost:3000/api/v1/live/match/update/firstInnings')
-		.then(res => {
-			console.log(res, '.........from updated score component');
-			this.props.dispatch({ type: 'ADD_MATCH', data: res.data.match });
-			this.setState({isDone: true })
-		}).catch(error => {
-			console.log(error)
-		})
-	}
+	// fetchMatchData = () => {
+	// 	axios.get('http://localhost:3000/api/v1/live/match/update/firstInnings')
+	// 	.then(res => {
+	// 		console.log(res, '.........from updated score component');
+	// 		this.props.dispatch({ type: 'ADD_MATCH', data: res.data.match });
+	// 		this.setState({isDone: true })
+	// 	}).catch(error => {
+	// 		console.log(error)
+	// 	})
+	// }
 
 	getNumberOfballsBowled = (count) => {
 		console.log('balls count ', count)
@@ -40,39 +44,54 @@ class Update extends Component {
 
 	componentDidMount() {
 		console.log('..........update score mounted.........')
-		this.fetchMatchData();
+		// this.fetchMatchData();
+		this.props.dispatch(getUpdatedInnings(this.stateUpdate))
 	}
 
 	handleChange = (e) => {
 		this.setState({[e.target.name] : e.target.value});	
 	}
 
+
+	stateUpdate = () => {
+		this.setState({ isDone : true });
+	}
+
+
 	handleClick = (e) => {
 		this.state.batsmen.push(e.target.value)
 		this.setState({ batsmen: this.state.batsmen });
 	}
 
-	strikeRate(sr) {
-		console.log(sr)
-	}
+	// strikeRate(sr) {
+	// 	console.log(sr)
+	// }
 
 	submitPlayers = (e) => {
 		e.preventDefault();
 		console.log('............submit function call');
-		const data = {...this.state};
+		
+		const data = {
+			player1 : this.state.player1,
+			player2 : this.state.player2,
+			bowler: this.state.bowler
+		}
 
-		axios.post('http://localhost:3000/api/v1/live/start/match/firstInnings', data).then(res => {
-			console.log(res);
-			this.fetchMatchData();
-		}).catch(err => console.log(err));
+		this.props.dispatch(postOpenersData(data, this.fetchMatchData))
+		
+
+		// axios.post('http://localhost:3000/api/v1/live/start/match/firstInnings', data).then(res => {
+		// 	console.log(res);
+		// 	this.fetchMatchData();
+		// }).catch(err => console.log(err));
 		this.setState({isDone: false, player1: '', player2: '', bowler: '', batsmen: ''})
 	}
 
-
-
+	fetchMatchData = () => {
+		this.props.dispatch(getUpdatedInnings(this.stateUpdate))
+	}
 
 	updatePlayersScoreCard = (e) => {
-		console.log('......runs update', e.target.value)
 		this.setState({[e.target.name]: e.target.value})
 	}
 

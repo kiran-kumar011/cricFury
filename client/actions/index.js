@@ -122,11 +122,17 @@ export function getMatchDetailsBeforeToss(stateUpdate) {
 }
 
 
-export function updateOversandToss(data) {
+
+export function getUpdatedInnings(stateUpdate) {
   return dispatch => {
-    axios.post(`${rootUrl}/cricket/matches/update/toss/bat/bowl`, data)
+    axios.get(`${rootUrl}/live/match/update/firstInnings`)
     .then(res => {
-      console.log(res, 'response from actioncreator to updatae toss')
+
+      dispatch({
+        type: 'ADD_MATCH',
+        data: res.data.match
+      })
+      stateUpdate();
     }).catch(err => {
       console.log(err);
     })
@@ -134,19 +140,102 @@ export function updateOversandToss(data) {
 }
 
 
-export function getUpdatedInnings() {
+
+export function updateOversandToss(data, getRequestForMatchDetails) {
   return dispatch => {
-    axios.get(`${rootUrl}/live/match/update/firstInnings`)
+    axios.post(`${rootUrl}/cricket/matches/update/toss/bat/bowl`, data)
     .then(res => {
-      console.log(res, 'getUpdatedInnings action creator');
+      console.log(res, 'response from actioncreator to updatae toss');
+
+      getRequestForMatchDetails();
+    }).catch(err => {
+      console.log(err);
+    })
+  }
+}
+
+
+export function postOpenersData(data, fetchMatchData) {
+  return dispatch => {
+    axios.post(`${rootUrl}/live/start/match/firstInnings`, data)
+    .then(res => {
+      console.log(res, 'posting openers data to the backend')
+
+      fetchMatchData();
+    }).catch(err => {
+      console.log(err);
+    })
+  }
+}
+
+
+export function addRunsToServer(data, fetchMatchData) {
+  return dispatch => {
+    axios.post(`${rootUrl}/live/add/runs/firstInnings`, data)
+    .then(res => {
+      console.log(res, 'from run posting action creator');
+
+      fetchMatchData();
+
+    }).catch(err => {
+      console.log(err);
+    })
+  }
+}
+
+
+export function getLiveScoreUpdate() {
+  return dispatch => {
+    axios.get(`${rootUrl}/live/start/match/firstInnings`)
+    .then(res => {
+      console.log(res, 'posting openers data to the backend')
 
       dispatch({
         type: 'ADD_MATCH',
         data: res.data.match
       })
+    }).catch(err => {
+      console.log(err);
     })
   }
 }
+
+
+
+export function addNewBowlerToScoreCard(data, getMatchData) {
+  return dispatch => {
+    axios.post(`${rootUrl}/live/add/new/bowler/firstInnings`, data)
+    .then(res => {
+      console.log(res, 'from adding new bowler to the backened');
+
+      getMatchData();
+    }).catch(err => {
+      console.log(err);
+    })
+  }
+}
+
+
+export function updateWickets(data, getMatchData) {
+  return dispatch => {
+    axios.post(`${rootUrl}/live/add/wickets/firstInnings`, data)
+    .then(res => {
+      console.log(res, '..............updating wickets......')
+
+      getMatchData();
+    }).catch(err => {
+      console.log(err)
+    })
+  }
+}
+
+
+
+
+
+
+
+
 
 
 

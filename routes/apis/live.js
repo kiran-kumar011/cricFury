@@ -47,7 +47,6 @@ router.get('/match/update/firstInnings', (req, res) => {
 
 
 router.post('/start/match/firstInnings', (req, res) => {
-	console.log(req.body,'..........afterpost data');
 
 	var striker = new BattingScoreCard({
 		playerId: req.body.player1,
@@ -75,13 +74,9 @@ router.post('/start/match/firstInnings', (req, res) => {
 		numGivenRuns: 0,
 	});
 
-	console.log('..........data stored', bowler, striker, nonStriker);
 	striker.save((err, savedSriker) => {
-		console.log('..........data stored', err, savedSriker)
 		nonStriker.save((err, savedNonStriker) => {
-			console.log('..........data stored',err, savedNonStriker)
 			bowler.save((err, savedBowler) => {
-				console.log('..........data stored',err, savedBowler)
 
 				Innings.findOneAndUpdate({matchId: req.session.matchId }, 
 					{ $push : 
@@ -93,26 +88,22 @@ router.post('/start/match/firstInnings', (req, res) => {
 					{new:true}, 
 					(err, innings) => {
 					if(err) return res.status(500).json({'error' : err});
-					// console.log(innings, 'updated innings fields');
 
 					Player.findByIdAndUpdate(savedBowler.playerId, 
 						{ $push: { bowling: savedBowler._id}}, 
 						{new: true}, 
 						(err, player) => {
 							if(err) return res.status(500).json({error: err})
-							// console.log(player, 'updated player schema...........');
 
 							Player.findByIdAndUpdate(savedSriker.playerId, 
 							{ $push : { batting: savedSriker._id}}, {new: true},
 							(err, player) => {
 								if(err) return res.status(500).json({error: err});
-								// console.log(player, 'updated batsmen striker in schema.......')
 									
 								Player.findByIdAndUpdate(savedNonStriker.playerId, 
 									{ $push : { batting: savedNonStriker._id}}, {new: true},
 									(err, player) => {
 										if(err) return res.status(500).json({error: err});
-										// console.log(player, 'updated batsmen nonStriker in schema.......')	
 								})
 							})
 						return res.json({success: true});
@@ -179,6 +170,7 @@ router.post('/add/runs/firstInnings', (req, res) => {
 	BattingScoreCard.findById({ _id: req.body.batsmenId }).exec((err, batsmen) => {
 		if(err) return res.status(500).json({error: err});
 		console.log(req.body, 'adding runs route check1');
+
 		batsmen.numRuns = (batsmen.numRuns + req.body.run);
 		batsmen.numBallsFaced = ++batsmen.numBallsFaced;
 		batsmen.numFours = (req.body.run == 4) ?  ++batsmen.numFours : batsmen.numFours;
@@ -198,7 +190,6 @@ router.post('/add/runs/firstInnings', (req, res) => {
 					bowler.numBowlsBowled = ++bowler.numBowlsBowled;
 					bowler.numOversBowled = Math.floor( bowler.numBowlsBowled / 6);
 					bowler.numEconomy = (bowler.numGivenRuns ? (bowler.numGivenRuns / bowler.numOversBowled) : bowler.numGivenRuns);
-
 
 					bowler.save((err, savedbowler) => {
 						console.log(req.body, ' before error return adding runs route check3...1',err);

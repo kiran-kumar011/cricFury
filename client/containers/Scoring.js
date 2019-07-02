@@ -34,17 +34,13 @@ class Scoring extends Component {
 			overs: this.state.overs
 		}
 
-		this.props.dispatch(updateOversandToss(data))
-		this.props.dispatch(getMatchDetailsBeforeToss(this.stateUpdate))
+		this.props.dispatch(updateOversandToss(data, this.getRequestForMatchDetails))
 	}
 
 
 	getRequestForMatchDetails = () => {
-		axios.get('http://localhost:3000/api/v1/cricket/matches/innings/update').then(res => {
-			this.setState({matchData: res.data});
-			this.props.dispatch({type: 'ADD_MATCH', data: res.data});
 
-		}).catch(err => console.log(err));
+		this.props.dispatch(getMatchDetailsBeforeToss(this.stateUpdate))
 	}
 
 
@@ -54,7 +50,7 @@ class Scoring extends Component {
 
 	componentDidMount = () => {
 
-		this.props.dispatch(getMatchDetailsBeforeToss(this.stateUpdate))
+		this.props.dispatch(getMatchDetailsBeforeToss(this.stateUpdate));
 	}
 
 
