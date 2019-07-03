@@ -4,7 +4,7 @@ import axios from 'axios';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 
-import { createNewMatch, getAllTeam } from '../actions';
+import { createNewMatch, getAllTeam, getMatchDetails } from '../actions';
  
 class Match extends Component {
 	
@@ -19,7 +19,7 @@ class Match extends Component {
 	}
 
 	componentDidMount = () => {
-		this.props.dispatch(getAllTeam())
+		this.props.dispatch(getAllTeam());
 	}
 
 
@@ -27,25 +27,28 @@ class Match extends Component {
 		e.preventDefault();
 		const data = {...this.state}
 
-		this.props.dispatch(createNewMatch(data, this.redirectToLiveUpdate));
+		this.props.dispatch(createNewMatch(data)).then(res => {
+			console.log(res, 'after action creator is returning promise');
+			
+			if(res.success) {
+				this.props.dispatch(getMatchDetails()).then(res => {
+					console.log(res, '..........matchdetails before redirecting to scoring');
 
-		this.setState({team1:'', team2: '', ground: ''});
+					localStorage.setItem('matchId', res.data._id)
+					this.setState({team1:'', team2: '', ground: ''});
+					this.props.history.push('/live/update');
+				})
+			}
+		});
+
 	}
-
-
-	redirectToLiveUpdate = (data) => {
-		console.log('redirectict called after post update', )
-		if(data._id) {
-			this.props.history.push('/live/update');
-		}
-	}
-
 
 
 	render() {
-		let filterteam1 = (this.props.teams.length ? this.props.teams : [] ).filter((team, index) => this.state.team2 != team._id);
-		let filterTeam2 =  (this.props.teams.length ? this.props.teams : [] ).filter((team, index) => this.state.team1 != team._id);
-	
+		let filterteam1 = (this.props.teams.length ? this.props.teams : [] )
+		.filter((team, index) => this.state.team2 != team._id);
+		let filterTeam2 =  (this.props.teams.length ? this.props.teams : [] )
+		.filter((team, index) => this.state.team1 != team._id);
 
 		return(
 			<div className='control selectContailer container is-fluid'>
@@ -69,7 +72,8 @@ class Match extends Component {
 							})
 						}
 					</select>
-					<input className='input' type='text' onChange={this.selectTeam} name='ground' placeholder='enter the ground name' value={this.state.ground}></input>
+					<input className='input' type='text' onChange={this.selectTeam} name='ground' 
+					placeholder='enter the ground name' value={this.state.ground}></input>
 					<button type='submit'>submit</button>
 				</form>
 			</div>

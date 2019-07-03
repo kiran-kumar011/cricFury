@@ -24,39 +24,37 @@ class Runs extends Component {
 		var run = +(e.target.value);
 
  		if(run % 2 == 0) {
- 			// even runs scored 
  			this.state.balls.push(run);
 
  			if(this.state.balls.length == 6) {
  				this.state.balls.length = 0;
- 				this.setState({balls: this.state.balls, striker: this.state.nonStriker, nonStriker: this.state.striker, currentStriker: this.state.nonStriker, bowler: '', isWicket: false });
+ 				this.setState({balls: this.state.balls, 
+ 					striker: this.state.nonStriker, 
+ 					nonStriker: this.state.striker, 
+ 					currentStriker: this.state.nonStriker, 
+ 					bowler: '', isWicket: false 
+ 				});
  			} else {
  				this.setState({ balls: this.state.balls });
  			}
- 			
 
- 			this.postRunsToServer(run, localStorage.getItem('currentStriker'), (this.state.balls.length == 0 ? true: false));
+ 			this.postRunsToServer(run);
 
  		} else {
-
- 			// odd run handling state.
-
  			this.state.balls.push(run);
 
  			if(this.state.balls.length != 6) {
- 				this.setState({balls: this.state.balls, striker: this.state.nonStriker, nonStriker: this.state.striker, currentStriker: this.state.nonStriker });
+ 				this.setState({balls: this.state.balls, 
+ 					striker: this.state.nonStriker, 
+ 					nonStriker: this.state.striker, 
+ 					currentStriker: this.state.nonStriker });
  			}
  			if(this.state.balls.length == 6) {
  				this.state.balls.length = 0;
  				this.setState({balls: this.state.balls, bowler: ''});
  			}
- 			this.postRunsToServer(run, localStorage.getItem('currentStriker'), (this.state.balls.length == 0 ? true: false));
+ 			this.postRunsToServer(run);
  		}
-	}
-
-
-	getMatchData = () => {
-		this.props.dispatch(getLiveScoreUpdate())
 	}
 
 
@@ -73,19 +71,31 @@ class Runs extends Component {
 		// to add the bowler at the begining...
 		var currentBowler = bowlingScoreCard[0]._id;
 
-		var batsmenPlaying = batsmanScoreCard.filter(player => (!player.isOut && player.isBatted)).map(playr => ({...playr, isOnStrike: false }));
+		var batsmenPlaying = batsmanScoreCard.filter(player => (!player.isOut && player.isBatted));
 
 
 		var striker = batsmenPlaying ? batsmenPlaying : [];
-
 		var nonStriker = batsmenPlaying.filter(player => player._id != this.state.currentStriker)
 
 
-		this.state.striker ? this.state.striker : this.setState({striker : this.state.currentStriker, nonStriker: nonStriker[0]._id})
+		this.state.striker ? 
+		this.state.striker 
+		: 
+		this.setState({striker : this.state.currentStriker, 
+			nonStriker: nonStriker[0]._id
+		})
 
 		// on the only condition where the currenStrike id is not available.
-		// in the case of adding first striker and nonstriker after that the curent striker id shoud be available all the time...
-		this.state.currentStriker  ? this.state.currentStriker : this.setState({striker: striker[0]._id, nonStriker: striker[1]._id, currentStriker: striker[0]._id, bowler: currentBowler});
+		// in the case of adding first striker and nonstriker after that the 
+		// curent striker id shoud be available all the time...
+		this.state.currentStriker  ? 
+		this.state.currentStriker 
+		: 
+		this.setState({striker: striker[0]._id, 
+			nonStriker: striker[1]._id, 
+			currentStriker: striker[0]._id, 
+			bowler: currentBowler
+		});
 
 	}
 
@@ -95,7 +105,11 @@ class Runs extends Component {
 	}
 
 
-	postRunsToServer = (run, batsmenId, isOverComplete) => {
+	postRunsToServer = (run) => {
+
+		const batsmenId = localStorage.getItem('currentStriker');
+
+		const isOverComplete = this.state.balls.length == 0 ? true: false;
 
 		var { batsmanScoreCard, bowlingScoreCard } = this.props.match.firstInnings;
 
@@ -114,8 +128,11 @@ class Runs extends Component {
 
 		const data = { run, batsmenId, bowlerId: id, inningsId, isOverComplete };
 
+		console.log(data, 'before posting runs to the server');
 
-		this.props.dispatch(addRunsToServer(data, this.getMatchData))
+		this.props.dispatch(addRunsToServer(data)).then(res => {
+			this.props.dispatch(getLiveScoreUpdate());
+		})
 	}
 
 
@@ -123,7 +140,10 @@ class Runs extends Component {
 		e.preventDefault();
 		var data = { bowlerId: this.state.nextBowler, inningsId: this.props.match.firstInnings._id }
 
-		this.props.dispatch(addNewBowlerToScoreCard(data, this.getMatchData));
+		this.props.dispatch(addNewBowlerToScoreCard(data)).then(res => {
+			console.log(res, 'after bowler added to the backend');
+			this.props.dispatch(getLiveScoreUpdate());
+		});
 
 	}
 
@@ -159,11 +179,19 @@ class Runs extends Component {
 		});
 
 		if(this.state.balls.length == 0) {
-			this.setState({ currentStriker: oldNonStriker, striker: oldNonStriker, nonStriker: newBatsmen, isWicket: false});
+			this.setState({ currentStriker: oldNonStriker, 
+				striker: oldNonStriker, 
+				nonStriker: newBatsmen, 
+				isWicket: false
+			});
 			
 		} else {
 			
-			this.setState({ currentStriker: newBatsmen, striker: newBatsmen, nonStriker: oldNonStriker, isWicket: false });
+			this.setState({ currentStriker: newBatsmen, 
+				striker: newBatsmen, 
+				nonStriker: oldNonStriker, 
+				isWicket: false 
+			});
 			
 		}
 
@@ -193,9 +221,13 @@ class Runs extends Component {
 						((this.state.balls.length == 0) && (overs > 0)) ?
 						<div>
 							<select className="select " name='bowler' onChange={this.submitNewBowler} >
+								<option>select new bowler</option>
 							{
 								bowlers.map(bowlr => {
-									return <option className='content is-large' key={bowlr._id} value={bowlr._id}>{bowlr.playerName}</option>
+									return <option className='content is-large' key={bowlr._id} 
+										value={bowlr._id}>
+											{bowlr.playerName}
+										</option>
 								})
 							}
 							</select>
@@ -214,12 +246,19 @@ class Runs extends Component {
 						<h1 className='content is-large'>add runs</h1>
 						{
 							scores.map((num, index) => {
-								return <button onClick={this.updateRuns} value={num} className='button is-outlined' key={index}>{num}</button>
+								return <button onClick={this.updateRuns} value={num} 
+								className='button is-outlined' key={index}>
+									{num}
+								</button>
 							})
 						}
 					</div>
 					<div>
-						<Wickets updateWicket={this.updateCurrentStriker} ballsArr={this.state.balls} getMatchData={this.getMatchData} wicket={this.addingWicketsToBallsBowledArr} isWicket={this.state.isWicket}/>
+						<Wickets updateWicket={this.updateCurrentStriker} 
+							ballsArr={this.state.balls} 
+							getMatchData={this.getMatchData} 
+							wicket={this.addingWicketsToBallsBowledArr} 
+							isWicket={this.state.isWicket}/>
 					</div>
 				</div>
 			</div>

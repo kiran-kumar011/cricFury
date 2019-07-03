@@ -23,8 +23,7 @@ class App extends Component {
     var token = localStorage.getItem('authToken'); 
     if(token && !this.props.user.email) {
       this.props.dispatch(verifyAuthToken(token));
-    }
-
+    } 
     // TODO: handle case when there is no token
   }
 

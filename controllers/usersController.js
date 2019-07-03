@@ -26,6 +26,7 @@ exports.post_loginPage = (req, res, next) => {
 					return res.status(200).json({
 						success: true,
 						token: token,
+						message: 'logged in successfully',
 						user : {
 							name: admin.name,
 							id: admin._id,
@@ -63,12 +64,12 @@ exports.post_signUpPage = (req, res, next) => {
 					return res.status(500).json({"message": 'db error from creating user asdasdads'});
 				}
 				if(newAdmin) {
-					res.json(newAdmin);
+					res.json({ success: true, message: 'signed up successfully' });
 				}
 			})	
 		}
 		else {
-			return res.send('email is already in use');
+			return res.json({success: false, message: 'email is already in use'});
 		}
 	})
 }

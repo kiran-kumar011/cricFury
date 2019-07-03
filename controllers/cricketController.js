@@ -6,16 +6,13 @@ var Innings = require('../models/Innings');
 var BattingScorecard = require('../models/BattingScoreCard');
 var BowlingScoreCard = require('../models/BowlingScoreCard');
 
-exports.get_newTeam = (req, res, next) => {
-	res.render('team');
-}
 
 exports.post_newTeam = (req, res, next) => {
-	console.log(req.body, '..........posted from react...');
+
 	Team.findOne({teamName: req.body.teamName}, (err, team) => {
 		if(err) return res.send(err);
 		if(!team) {
-			// console.log('.............from team did not found...........');
+
 			var record = new Team();
 			record.teamName = req.body.teamName;
 			record.adminId = req.session.userId;
@@ -24,7 +21,10 @@ exports.post_newTeam = (req, res, next) => {
 				if(err) return console.log(err); 
 				if(team) {
 
-					Admin.findByIdAndUpdate(req.session.userId, {$push: {teams: team.id}}, {new: true}, (err, team) => {
+					Admin.findByIdAndUpdate(req.session.userId, 
+						{$push: {teams: team.id}}, 
+						{new: true}, 
+						(err, team) => {
 						if(err) return res.send(err);
 					});
 
@@ -36,19 +36,22 @@ exports.post_newTeam = (req, res, next) => {
 						if(err) return console.log(err);
 						if(playersDoc) {
 
-							// console.log(playersDoc, '..........insertmany playersDoc......');
 							var playersIds = playersDoc.map(player => {
 								return player._id;
 							});
 
-							Team.findByIdAndUpdate(team._id,{$push :{players: {$each: playersIds}}}, {new: true}, (err, team) => {
+							Team.findByIdAndUpdate(team._id,
+								{$push :{players: {$each: playersIds}}}, 
+								{new: true}, (err, team) => {
 								if(err) return res.send(err);
 								if(team) {
-									Team.findOne({_id: team._id}).populate('players').exec((err, newTeam) => {
-											// console.log(newTeam,'.............inside false', err)
+
+									Team.findOne({_id: team._id})
+									.populate('players')
+									.exec((err, newTeam) => {
+
 										if(err) return res.json({error: err});
 										if(newTeam) {
-											// console.log(newTeam,'.............inside true')
 											return res.json(newTeam);
 										}
 									})
@@ -59,7 +62,7 @@ exports.post_newTeam = (req, res, next) => {
 				}
 			})
 		} else {
-			return res.json({error :'team name already exists please change the name'});
+			return res.json({ message : 'team name already exists please change the name' });
 		}
 	})
 }
@@ -67,11 +70,12 @@ exports.post_newTeam = (req, res, next) => {
 
 
 exports.get_hostMatch = (req, res) => {
-	console.log(req.session.userId, '...............user id from hom req route')
-	Team.find({ adminId: req.session.userId }).populate('players').exec((err, teams) => {
+	Team.find({ adminId: req.session.userId })
+	.populate('players')
+	.exec((err, teams) => {
+
 		if(err) return res.status(500).send(err);
 		if(teams) {
-			console.log(teams, '..............found team');
 			res.json(teams);
 		}
 	})
@@ -79,7 +83,6 @@ exports.get_hostMatch = (req, res) => {
 
 
 exports.post_hostMatch = (req, res) => {
-	console.log(req.body, '.......matchid in get request......');
 
 	Match.findOne({ team1: req.body.team1, team2: req.body.team2 }, (err, match) => {
 		if(err) return res.send(err);
@@ -92,19 +95,20 @@ exports.post_hostMatch = (req, res) => {
 			record.save((err, match) => {
 				if(err) return console.error(err);
 				if(match) {
-					console.log(match, '.................match document..........');
 					req.session.matchId = match._id;
 
 					Team.findByIdAndUpdate(req.body.team1, 
 						{ $push: {matchesId: match.id}}, 
 						{new: true}, 
 						(err, savedTeam1) => {
+
 						if(err) return res.status(500).json({error: err});
-						console.log(savedTeam1, '.................team after pushing the matchid..........');
 						savedTeam1.players.forEach(id => {
-							Player.findByIdAndUpdate(id, { $push: {numMatchesPlayed: match.id}}, {new: true}, (err, player) => {
+
+							Player.findByIdAndUpdate(id, 
+								{ $push: {numMatchesPlayed: match.id}}, 
+								{new: true}, (err, player) => {
 								if(err) return res.status(500).json({error: err});
-								console.log(player, 'team1 players pushed matches id');
 							})
 						})
 
@@ -115,19 +119,28 @@ exports.post_hostMatch = (req, res) => {
 							if(err) return res.status(500).json({error: err});
 							
 							savedteam2.players.forEach(id => {
-								Player.findByIdAndUpdate(id, { $push: {numMatchesPlayed: match.id}}, {new: true}, (err, player) => {
+
+								Player.findByIdAndUpdate(id, 
+									{ $push: {numMatchesPlayed: match.id}}, 
+									{new: true}, 
+									(err, player) => {
+										
 								if(err) return res.status(500).json({error: err});
-								console.log(player, 'team2 players, pushed matches id');
 								})
-
 							})
-
 						})
 					})
 
-					Admin.findByIdAndUpdate(req.session.userId, { $push: { matches: match.id}}, { new: true }, (err, admin) => {
+					Admin.findByIdAndUpdate(req.session.userId, 
+						{ $push: { matches: match.id}}, 
+						{ new: true }, 
+						(err, admin) => {
 						if(err) return console.error(err);
-						return res.json(match);
+						return res.json({ 
+							match, 
+							success: true, 
+							message: 'created new match successfully',
+						});
 					});
 				}
 			})
@@ -137,7 +150,7 @@ exports.post_hostMatch = (req, res) => {
 
 
 exports.getMatchDetails = (req, res) => {
-	console.log(req.session.matchId, '......matchid');
+
 	Match.findById({ _id: req.session.matchId })
 	.populate({
 		path: 'team1',
@@ -154,9 +167,9 @@ exports.getMatchDetails = (req, res) => {
 		}
 	})
 	.exec((err, match) => {
+
 		if(err) return res.status(500).json({error: err});
 		if(match) {
-			console.log(match,"................match in json.......");
 			res.json(match);
 		}
 	})
@@ -165,7 +178,6 @@ exports.getMatchDetails = (req, res) => {
 
 
 exports.updateOversTossAndOptedTo = (req, res) => {
-	console.log('check1..........heeaa........', req.session.matchId, req.body);
 
 
 	Match.findById({ _id: req.session.matchId }).exec((err, match) => {

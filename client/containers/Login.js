@@ -14,8 +14,8 @@ class Login extends Component {
 	state = {
 		email: '',
 		password: '',
-		redirect: false,
 		isLoggedIn: false,
+		message: ''
 	}
 
 
@@ -28,15 +28,21 @@ class Login extends Component {
 		e.preventDefault();
 		var data = {...this.state};
 
-		this.props.dispatch(verifyLoggedInUser(data)).then(res => this.getResponse(res));
-		this.setState({email: '', password: ''});
+		this.props.dispatch(verifyLoggedInUser(data)).then(res => {
+			console.log(res, 'after login promise returned from action creator');
+			if(res.success) {
+				this.setState({
+					isLoggedIn: true, 
+					email: '', 
+					password: '', 
+					message: res.message 
+				});
+				setTimeout(() => this.props.history.push('/'), 1000);
+			} else {
+				this.setState({ message: res.message })
+			} 
+		})
 
-	}
-
-	getResponse = (data) => {
-		if(data.data.user.id) {
-			this.props.history.push('/');
-		}
 	}
 
 
@@ -46,8 +52,8 @@ class Login extends Component {
 			<div>
 				<Nav />
 				<div className='log-in-wrapper'>
-					<h1 style={{fontSize: '40px', paddingBottom: '20px'}}>Log In</h1>
-					<p style={{color: '#5cb85c', fontWeight: '700', marginBottom: "10px"}}>Need an account?</p>
+					<h1 className='sign-up-header'>Log In</h1>
+					<p className='sign-up-content'>Need an account?</p>
 					<form onSubmit={this.submitHandler}>
 						<div className='signIn'>
 							<div className='input'>
@@ -56,8 +62,11 @@ class Login extends Component {
 							<div className='input'>
 								<input className='default' type='password' name='password' value={this.state.password} onChange={this.handleChange} placeholder='Password'/>
 							</div>
+							{
+								this.state.message ? <h1 className={this.state.isLoggedIn ? 'green': 'red'}>{this.state.message}</h1> : ''
+							}
 							<div>
-								<button style={{fontSize: '20px', padding: '10px 20px', borderRadius: '5px', backgroundColor:'#5cb85c', color: 'white',  marginTop:'15px', float: 'right'}}>Log In</button>
+								<button className='sign-up-button'>Log In</button>
 							</div>
 						</div>
 					</form>

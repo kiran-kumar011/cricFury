@@ -177,13 +177,51 @@ input:focus, button:focus {
 .playerName {
   padding: 20px;
 }
-// .inactive {
-//   display: none;
-// }
 
 .out {
   color: red;
 }
+
+
+.sign-up-content {
+  color: #5cb85c; 
+  font-weight: 700; 
+  margin-bottom: 10px;
+}
+
+
+.sign-up-header {
+  font-size: 40px; 
+  padding-bottom: 20px;
+}
+
+.sign-up-button {
+  font-size: 20px; 
+  padding: 10px 20px;
+  border-radius: 5px; 
+  background-color:#5cb85c;
+  color: white;  
+  margin-top:15px; 
+  float: right;
+}
+
+.green {
+  color: #5cb85c;
+}
+
+.red {
+  color: red;
+}
+
+
+
+
+
+
+
+
+
+
 
 
 

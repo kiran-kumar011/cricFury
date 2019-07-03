@@ -25,14 +25,15 @@ return dispatch => {
 }
 
 export function postNewUser(data) {
-  return dispatch => {
+  return dispatch => new Promise ((resolve, reject) => {
     axios.post(`${rootUrl}/users/signup`, data)
     .then(res => {
       console.log(res, 'after signing up action creator');
+      resolve(res.data);
     }).catch(err => {
       console.log(err);
     })
-  }
+  })
 }
 
 
@@ -42,13 +43,12 @@ export function verifyLoggedInUser(data) {
     .then(res => {
       if(res.data.success) {
         localStorage.setItem('authToken', res.data.token);
-        console.log(getState);
-        resolve(res);
       }
       dispatch({
         type: "ADD_CURRENT_USER",
         data: res.data.user
       })
+      resolve(res.data);
     }).catch(error => {
       console.log(error);
     })
@@ -72,18 +72,17 @@ export function addNewTeam(data) {
 }
 
 
-export function createNewMatch(data , sendResponse) {
-  return dispatch => {
+export function createNewMatch(data) {
+  return dispatch => new Promise((resolve, reject) => {
     axios.post(`${rootUrl}/cricket/create/match`, data)
     .then(res => {
-
+      console.log(res, 'after postin new match data to the server')
       localStorage.setItem('matchId', res.data._id);
-
-      sendResponse(res.data);
+      resolve(res.data)
     }).catch(error => {
       console.log(error);
     })
-  }
+  })
 }
 
 
@@ -103,8 +102,8 @@ export function getAllTeam() {
 
 
 
-export function getMatchDetailsBeforeToss(stateUpdate) {
-  return dispatch => {
+export function getMatchDetails() {
+  return dispatch => new Promise ((resolve, reject) => {
     axios.get(`${rootUrl}/cricket/matches/innings/update`)
     .then(res => {
 
@@ -113,18 +112,17 @@ export function getMatchDetailsBeforeToss(stateUpdate) {
         data: res.data
       })
 
-      stateUpdate(res.data);
-
+      resolve(res);
     }).catch(err => {
       console.log(err);
     })
-  }
+  })
 }
 
 
 
-export function getUpdatedInnings(stateUpdate) {
-  return dispatch => {
+export function getUpdatedInnings() {
+  return dispatch => new Promise((resolve, reject) => {
     axios.get(`${rootUrl}/live/match/update/firstInnings`)
     .then(res => {
 
@@ -132,60 +130,59 @@ export function getUpdatedInnings(stateUpdate) {
         type: 'ADD_MATCH',
         data: res.data.match
       })
-      stateUpdate();
+      resolve(res.data)
     }).catch(err => {
       console.log(err);
     })
-  }
+  })
 }
 
 
 
-export function updateOversandToss(data, getRequestForMatchDetails) {
-  return dispatch => {
+export function updateOversandToss(data) {
+  return dispatch => new Promise ((resolve, reject) => {
     axios.post(`${rootUrl}/cricket/matches/update/toss/bat/bowl`, data)
     .then(res => {
-      console.log(res, 'response from actioncreator to updatae toss');
-
-      getRequestForMatchDetails();
+      console.log(res, 'response from action creator to updatae toss');
+      resolve(res.data)
     }).catch(err => {
       console.log(err);
     })
-  }
+  })
 }
 
 
-export function postOpenersData(data, fetchMatchData) {
-  return dispatch => {
+export function postOpenersData(data) {
+  return dispatch => new Promise((resolve, reject) => {
     axios.post(`${rootUrl}/live/start/match/firstInnings`, data)
     .then(res => {
       console.log(res, 'posting openers data to the backend')
 
-      fetchMatchData();
+      resolve(res.data)
     }).catch(err => {
       console.log(err);
     })
-  }
+  })
 }
 
 
-export function addRunsToServer(data, fetchMatchData) {
-  return dispatch => {
+export function addRunsToServer(data) {
+  return dispatch => new Promise((resolve, reject) => {
     axios.post(`${rootUrl}/live/add/runs/firstInnings`, data)
     .then(res => {
-      console.log(res, 'from run posting action creator');
+      console.log(res.data, 'from run posting action creator');
 
-      fetchMatchData();
+      resolve(res.data);
 
     }).catch(err => {
       console.log(err);
     })
-  }
+  })
 }
 
 
 export function getLiveScoreUpdate() {
-  return dispatch => {
+  return dispatch => new Promise((resolve, reject) => {
     axios.get(`${rootUrl}/live/start/match/firstInnings`)
     .then(res => {
       console.log(res, 'posting openers data to the backend')
@@ -194,39 +191,40 @@ export function getLiveScoreUpdate() {
         type: 'ADD_MATCH',
         data: res.data.match
       })
+      resolve(res.data);
     }).catch(err => {
       console.log(err);
     })
-  }
+  })
 }
 
 
 
-export function addNewBowlerToScoreCard(data, getMatchData) {
-  return dispatch => {
+export function addNewBowlerToScoreCard(data) {
+  return dispatch => new Promise((resolve, reject) => {
     axios.post(`${rootUrl}/live/add/new/bowler/firstInnings`, data)
     .then(res => {
       console.log(res, 'from adding new bowler to the backened');
 
-      getMatchData();
+      resolve(res.data)
     }).catch(err => {
       console.log(err);
     })
-  }
+  })
 }
 
 
-export function updateWickets(data, getMatchData) {
-  return dispatch => {
+export function updateWickets(data) {
+  return dispatch => new Promise((resolve, reject) => {
     axios.post(`${rootUrl}/live/add/wickets/firstInnings`, data)
     .then(res => {
       console.log(res, '..............updating wickets......')
 
-      getMatchData();
+      resolve(res)
     }).catch(err => {
       console.log(err)
     })
-  }
+  })
 }
 
 

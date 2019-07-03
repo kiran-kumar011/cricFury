@@ -7,11 +7,10 @@ import Wickets from './Wickets';
 import UpdateScore from './UpdateScore';
 import {connect} from 'react-redux';
 
-import { getMatchDetailsBeforeToss, updateOversandToss } from '../actions';
+import { getMatchDetails, updateOversandToss, getUpdatedInnings, getLiveScoreUpdate } from '../actions';
 
 class Scoring extends Component {
 	state = {
-		matchData: null,
 		tossWonBy: '',
 		optedTo: '',
 		overs: '',
@@ -19,56 +18,48 @@ class Scoring extends Component {
 		isTossWonteam2: false,
 		isOptedToBat: false,
 		isOptedToBowl: false,
-		start: false,
+	}
+
+	componentDidMount = () => {
+		this.getRequestForMatchDetails();
+	}
+
+
+	getRequestForMatchDetails = () => {
+		this.props.dispatch(getMatchDetails()).then(res => {
+			console.log('redux store updated');
+		})
+
 	}
 
 	submitOver = (e) => {
 		this.setState({overs: e.target.value});
 	}
 
+
 	submitMatchData = (e) => {
 		e.preventDefault();
 		const data = {
 			tossWonBy: this.state.tossWonBy,
 			optedTo: this.state.optedTo, 
-			overs: this.state.overs
+			overs: this.state.overs,
 		}
 
-		// TODO: Refactor it to make it such that actioncreator returns a promise 
-		// and then you can dispatch
-
-		// it should return a promise.
-		// this.props.dispatch(updateOversandToss(data)).then(() => {
-		// 	this.props.dispatch(getMatchDetailsBeforeToss());
-		// })
-
-		// dispatch an action
-		this.props.dispatch(updateOversandToss(data, this.getRequestForMatchDetails))
-	}
-
-
-	getRequestForMatchDetails = () => {
-
-		this.props.dispatch(getMatchDetailsBeforeToss(this.stateUpdate))
-	}
-
-
-	stateUpdate = (data) => {		
-		this.setState({matchData: data})
-	}
-
-	componentDidMount = () => {
-		this.props.dispatch(getMatchDetailsBeforeToss(this.stateUpdate));
+		this.props.dispatch(updateOversandToss(data)).then(res => {
+			console.log(res, '...............updated overs and toss.......')
+			this.props.dispatch(getUpdatedInnings())
+		})
 	}
 
 
 	render() {
-		const match = this.state.matchData ? this.state.matchData : {}
+		const match = this.props.match._id ? this.props.match : {};
+
 		return(
 			<div>
 				<Nav />
 				<h1 className='content'>create scoring page</h1>
-				<section onSubmit={this.submitMatchData}>
+				<section onSubmit={ this.submitMatchData }>
 					{
 						match.tossWonBy ? 
 						''
@@ -76,12 +67,20 @@ class Scoring extends Component {
 						(<div>
 							<div className='oversWrapper'>
 								<label className='content is-large'>Overs</label>
-								<input className='overs' onChange={this.submitOver} value={this.state.overs} type='text' name='overs'></input>
+								<input className='overs' onChange={this.submitOver} 
+								value={this.state.overs} type='text' name='overs'></input>
 							</div> 
 							<h1 className='content is-large'>toss won by</h1>
-							<button className={this.state.isTossWonteam1 ? 'activeButton button': 'inactiveButton button'} onClick={() => this.setState({tossWonBy: this.state.matchData.team1._id, isTossWonteam1: true, isTossWonteam2: false})}>{this.state.matchData? this.state.matchData.team1.teamName : 'team1'}</button>
-							<button className={this.state.isTossWonteam2 ? 'activeButton button': 'inactiveButton button'} onClick={() => this.setState({tossWonBy: this.state.matchData.team2._id, isTossWonteam2: true, isTossWonteam1: false})}>{this.state.matchData ? this.state.matchData.team2.teamName : 'team2'}</button>
-						</div>)
+							<button className={this.state.isTossWonteam1 ? 'activeButton button': 'inactiveButton button'} 
+								onClick={() => this.setState({tossWonBy: match.team1._id, isTossWonteam1: true, isTossWonteam2: false})}>
+								{match._id ? match.team1.teamName : 'team1'}
+							</button>
+							<button className={this.state.isTossWonteam2 ? 'activeButton button': 'inactiveButton button'} 
+								onClick={() => this.setState({tossWonBy: match.team2._id, isTossWonteam2: true, isTossWonteam1: false})}>
+								{match._id ? match.team2.teamName : 'team2'}
+							</button>
+						</div>
+						)
 					}
 
 					{
@@ -97,7 +96,10 @@ class Scoring extends Component {
 										onClick={() => this.setState({isOptedToBat: true, isOptedToBowl: false, optedTo: 'bat'})}>
 										bat
 									</button>
-									<button className={this.state.isOptedToBowl ? 'activeButton button': 'inactiveButton button'} onClick={() => this.setState({isOptedToBat: false, isOptedToBowl: true, optedTo: 'bowl'})}>bowl</button>
+									<button className={this.state.isOptedToBowl ? 'activeButton button': 'inactiveButton button'} 
+										onClick={() => this.setState({isOptedToBat: false, isOptedToBowl: true, optedTo: 'bowl'})}>
+										bowl
+									</button>
 								</div>
 							</div>
 						)
@@ -108,16 +110,20 @@ class Scoring extends Component {
 					}
 				</section>
 				{
-					this.state.start && match.optedTo ? 
-					<UpdateScore optedTo={this.state.optedTo} tossWonBy={this.state.tossWonBy} players={this.state.matchData.players}/>
+					match.optedTo ? 
+					<UpdateScore optedTo={this.state.optedTo} tossWonBy={this.state.tossWonBy} players={match.players}/>
 					: 
-					<button className='button' onClick={() => this.setState({start: true})}>Start the Game</button>
+					''
 				}
 			</div>
 		)
 	}
 }
 
+function mapStateToProps(state) {
+	return {
+		match: state.match,
+	}
+}
 
-
-export default connect()(Scoring);
+export default connect(mapStateToProps)(Scoring);

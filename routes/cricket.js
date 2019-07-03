@@ -6,7 +6,6 @@ var Admin = require('../models/Admin');
 var cricketController = require('../controllers/cricketController');
 
 
-router.get('/new/team', cricketController.get_newTeam);
 
 
 router.post('/new/team', cricketController.post_newTeam);
@@ -25,7 +24,6 @@ router.get('/score/update', (req, res) => {
 router.post('matches/update/toss/bat/bowl', cricketController.updateOversTossAndOptedTo);
 
 
-// router.post('/matches/innings/update', cricketController.addInningsToMatch);
 
 
 router.get('/matches/innings/update', cricketController.getMatchDetails);

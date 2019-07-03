@@ -14,6 +14,7 @@ class SignUp extends Component {
 		email: '',
 		password: '',
 		isSignedUp: false,
+		message: '',
 	}
 
 	handleChange = (e) => {
@@ -25,17 +26,21 @@ class SignUp extends Component {
 		const data = {...this.state};
 		console.log(this.state);
 
-		this.props.dispatch(postNewUser(data));
-		// axios.post('http://localhost:3000/api/v1/users/signup', data).then(response => {
-		// 	if(response) {
-		// 		console.log(response);
-		// 		this.setState({ isSignedUp: true })
-		// 	}
-		// }).catch(error => {
-		// 	console.log(error);
-		// })
-
-		this.setState({ username: '', email:'', password:'' });
+		this.props.dispatch(postNewUser(data)).then(res => {
+			console.log(res, 'after signing up user');
+			if(res.success) {
+				setTimeout(() => this.props.history.push('/login'), 1000);
+				this.setState({ 
+					username: '', 
+					email:'', 
+					password:'', 
+					message: res.message, 
+					isSignedUp: true 
+				});
+			} else {
+				this.setState({ message: res.message })
+			}
+		});
 	}
 
 	render() {
@@ -43,20 +48,34 @@ class SignUp extends Component {
 			<div>
 				<Nav />
 				<div className='sign-up-wrapper'>
-					<h1 style={{fontSize: '40px', paddingBottom: '20px'}}>Sign Up</h1>
-					<p style={{color: '#5cb85c', fontWeight: '700', marginBottom: "10px"}}>Have an account?</p>
+					<h1 className='sign-up-header'>Sign Up</h1>
+					<p className='sign-up-content'>Have an account?</p>
 					<form onSubmit={this.submitHandler}>
 						<div className='input'>
-							<input className='default' type='text' name='username' value={this.state.username} onChange={this.handleChange} placeholder='Username'/>
+							<input className='default' 
+							type='text' name='username' 
+							value={this.state.username} 
+							onChange={this.handleChange} 
+							placeholder='Username'/>
 						</div>
 						<div className='input'>
-							<input className='default' type='email' name='email' onChange={this.handleChange} value={this.state.email} placeholder='Email'/>
+							<input className='default' type='email' 
+							name='email' onChange={this.handleChange} 
+							value={this.state.email} placeholder='Email'/>
 						</div>
 						<div className='input'>
-							<input className='default' type='password' name='password' onChange={this.handleChange} value={this.state.password}  placeholder='Password'/>
+							<input className='default' type='password' 
+							name='password' onChange={this.handleChange} 
+							value={this.state.password}  placeholder='Password'/>
 						</div>
+						{
+							this.state.message ? 
+							<h1 className={this.state.isSignedUp ? 'green' : 'red'}>{this.state.message}</h1> 
+							: 
+							''
+						}
 						<div>
-							<button type='submit' style={{fontSize: '20px', padding: '10px 20px', borderRadius: '5px', backgroundColor:'#5cb85c', color: 'white',  marginTop:'15px', float: 'right'}}>Sign Up</button>
+							<button className='sign-up-button' type='submit'>Sign Up</button>
 						</div>
 					</form>
 				</div>

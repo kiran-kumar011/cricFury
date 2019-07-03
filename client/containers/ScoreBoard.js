@@ -23,22 +23,24 @@ class ScoreBoard extends Component {
 		.then(res => {
 			this.props.dispatch({type: 'ADD_MATCH', data: res.data.match});
 
-			var batsmenArr = res.data.match.firstInnings.batsmanScoreCard.map(batsmen => {
-				return {...batsmen, isOnstrike: false};
-			})
+			// var batsmenArr = res.data.match.firstInnings.batsmanScoreCard.map(batsmen => {
+			// 	return {...batsmen, isOnstrike: false};
+			// })
 
-			this.props.dispatch({type: 'ADD_BATSMENS', data: batsmenArr});
+			// this.props.dispatch({type: 'ADD_BATSMENS', data: batsmenArr});
 
-			var bowlersArr = res.data.match.firstInnings.bowlingScoreCard.map(bowler => {
-				return {...bowler, isBowling: false };
-			})
+			// var bowlersArr = res.data.match.firstInnings.bowlingScoreCard.map(bowler => {
+			// 	return {...bowler, isBowling: false };
+			// })
 
-			this.props.dispatch({ type:'ADD_BOWLERS', data: bowlersArr });
+			// this.props.dispatch({ type:'ADD_BOWLERS', data: bowlersArr });
 
 
 			this.setState({ isUpdated: true })
 		}).catch(err => console.log(err))
 	}
+
+
 
 	strikeRate(sr) {
 		if(sr) {
@@ -49,37 +51,20 @@ class ScoreBoard extends Component {
 	}
 
 
-	// handlePlayers = (e) => {
-	// 	console.dir(e.target, 'from scoreboard to select new striker');
-	// 	console.log(e.target.id, 'from scoreboard to select new striker');
-	// 	if(isWicket) {
-	// 		this.props.dispatch({type: 'WICKET', data: })
-	// 		this.setState({ updateStriker: e.target.id, isWicket: false });
-	// 	}
-	// }
-
-
-	// iswicketCheck = (boolean) => {
-	// 	console.log('check in scoreboard....', boolean);
-	// 	this.setState({ isWicket: boolean });
-	// }
-
-
 	numEconomy(eco) {
 		var res = eco ? eco.toString().split('.') : '00'
 		var save = res[1] ? res[1].slice(0, 2) : '00';
 
 		return res[0] + '.' + save;
 	}
-
-
+	
 
 	render() {
 
 		const {batsmanScoreCard, bowlingScoreCard, numScore, battingTeamId} = this.props.match.firstInnings;
 		const batsmenArr = batsmanScoreCard && this.state.isUpdated ? batsmanScoreCard : [];
 		const bowlersArr = bowlingScoreCard && this.state.isUpdated ? bowlingScoreCard : [];
-		// console.log(batsmenArr, bowlersArr)
+
 		return(
 			<div>
 				<div className='scoreCardWrapper'>
@@ -96,7 +81,8 @@ class ScoreBoard extends Component {
 							batsmenArr.map((batsmen, index) => {
 								return (
 									<div key={index} className='batsmenScoreList'>
-										<h1 className={batsmen.isOut ? 'content is-large out' : 'content is-large'} onClick={this.handlePlayers} id={batsmen._id}>{batsmen.playerId.playerName}</h1>
+										<h1 className={batsmen.isOut ? 'content is-large out' : 'content is-large'} 
+											onClick={this.handlePlayers} id={batsmen._id}>{batsmen.playerId.playerName}</h1>
 										<p className='content is-large'>{batsmen.numRuns}</p>
 										<p className='content is-large'>{batsmen.numBallsFaced}</p>
 										<p className='content is-large'>{batsmen.numFours}</p>

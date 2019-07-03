@@ -1,28 +1,28 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import rootReducer from './reducers';
-// import thunk from "redux-thunk";
+import thunk from "redux-thunk";
 
-const logger = function(store){
-	return function(next){
-		return function(action){
-			console.group(action.type);
-			console.log(`%c ${action}`, 'background: #222; color: #bada55');
-			console.groupEnd();
-			return next(action);
-		}
-	}
-}
+// const logger = function(store){ 
+// 	return function(next){
+// 		return function(action){
+// 			console.group(action.type);
+// 			console.log(`%c ${action}`, 'background: #222; color: #bada55');
+// 			console.groupEnd();
+// 			return next(action);
+// 		}
+// 	}
+// }
 
-const thunk = function({dispatch, getState}){
-	return function(next){
-		return function(action){
-			if(typeof action === "function"){
-				return action(dispatch, getState)
-			}
-			return next(action);
-		}
-	}
-}
+// const thunk = function({dispatch, getState}){
+// 	return function(next){
+// 		return function(action){
+// 			if(typeof action === "function"){
+// 				return action(dispatch, getState)
+// 			}
+// 			return next(action);
+// 		}
+// 	}
+// }
 
 // const typeCheck = function({dispatch, getState}){
 // 	return function(next){
@@ -35,7 +35,7 @@ const thunk = function({dispatch, getState}){
 // 	}
 // }
 
-const middleware = [logger, thunk];
+// const middleware = [logger, thunk];
 
 
 const composeEnhancers =
@@ -46,7 +46,7 @@ const composeEnhancers =
     }) : compose;
 
 const enhancer = composeEnhancers(
-  applyMiddleware(...middleware),
+  applyMiddleware(thunk),
   // other store enhancers if any
 );
 

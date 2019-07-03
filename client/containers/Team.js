@@ -17,9 +17,6 @@ class Team extends Component {
 	addNewPlayer = (e) => {
 		e.preventDefault();
 		const element = document.getElementById('player-name-input');
-		if(this.state.players.length == 11) {
-			return alert('Maximum only 11 players can be added. Already added 11.');
-		}
 		if(element.value) {
 			this.state.players.push(element.value);
 			this.setState({ players: this.state.players, currentPlayer: '' });
@@ -56,14 +53,20 @@ class Team extends Component {
 				<Nav/>
 				<h1>hello</h1>
 				<form  onSubmit={this.submitHandler}>
-					<input className='input' type='text' name='teamName' onChange={this.addNewTeam} value={this.state.teamName} placeholder='enter team name'></input>
+					<input className='input' type='text' name='teamName' 
+					onChange={this.addNewTeam} value={this.state.teamName} 
+					placeholder='enter team name'></input>
 					{
 						this.state.players.length === 11 ?  '' :
-						<input className='input' type='text' onKeyDown={this.handleKeyDown} name='players' id="player-name-input" placeholder='enter the player name'/>
+						<input className='input' type='text' onKeyDown={this.handleKeyDown} 
+						name='players' id="player-name-input" placeholder='enter the player name'/>
 					}
 
 					{
-						this.state.players.length === 11 ? <button className='button'>Submit team</button> : <button className='button' onClick={this.addNewPlayer}>Add</button>
+						this.state.players.length === 11 ? 
+						<button className='button'>Submit team</button> 
+						: 
+						<button className='button' onClick={this.addNewPlayer}>Add</button>
 					}
 				</form>	
 				<div>

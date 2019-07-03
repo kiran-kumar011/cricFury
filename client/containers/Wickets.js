@@ -6,12 +6,6 @@ import { updateWickets, addNewBatsmen, getLiveScoreUpdate } from '../actions';
 
 class Wickets extends Component {
 
-// type of wicket fell. 
-// out batsman id. 
-// handling strike and nonstrike id.
-// adding runs if in case.
-
-
 
 	state = {
 		newBatsmen: localStorage.getItem('newBatsmen') || '',
@@ -120,7 +114,8 @@ class Wickets extends Component {
 					<h1 className='content is-large'>add wickets</h1>
 					{
 						wickets.map((typ, index) => {
-							return <button onClick={this.handlingWicket} className='button is-outlined' value={typ} key={index}>{typ}</button>
+							return <button onClick={this.handlingWicket} className='button is-outlined' 
+							value={typ} key={index}>{typ}</button>
 						})
 						
 					}
