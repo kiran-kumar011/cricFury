@@ -10,7 +10,7 @@ const setTokenToAxios = (token) => {
 
 
 export function verifyAuthToken(token) {
-return dispatch => {
+  return dispatch => new Promise((resolve, reject) => {
     axios.get(`${rootUrl}/users/me`, 
     {headers: { 'Authorization': `bearer ${token}`}}
     ).then(res => {
@@ -18,10 +18,11 @@ return dispatch => {
         type: "ADD_CURRENT_USER",
         data: res.data.user
       })
+      resolve(res)
     }).catch(error => {
       console.log(error);
     })
-  }
+  })
 }
 
 export function postNewUser(data) {
@@ -191,6 +192,7 @@ export function getLiveScoreUpdate() {
         type: 'ADD_MATCH',
         data: res.data.match
       })
+
       resolve(res.data);
     }).catch(err => {
       console.log(err);
@@ -218,9 +220,9 @@ export function updateWickets(data) {
   return dispatch => new Promise((resolve, reject) => {
     axios.post(`${rootUrl}/live/add/wickets/firstInnings`, data)
     .then(res => {
-      console.log(res, '..............updating wickets......')
+      console.log(res, 'action creator..............updating wickets......');
 
-      resolve(res)
+      resolve(res.data)
     }).catch(err => {
       console.log(err)
     })
@@ -228,17 +230,17 @@ export function updateWickets(data) {
 }
 
 
-export function addNewBatsmen(data, getMatchData) {
-  return dispatch => {
+export function addNewBatsmen(data) {
+  return dispatch => new Promise((resolve, reject) => {
     axios.post(`${rootUrl}/live/add/new/batsmen`, data)
     .then(res => {
       console.log(res);
 
-      getMatchData();
+      resolve(res.data);
     }).catch(err => {
       console.log(err);
     })
-  }
+  })
 }
 
 

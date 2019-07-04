@@ -12,6 +12,7 @@ class Team extends Component {
 		teamName: '',
 		players: [],
 		currentPlayer: '', 
+		message: ''
 	}
 
 	addNewPlayer = (e) => {
@@ -33,17 +34,28 @@ class Team extends Component {
 		}
 	}
 
+
+	removePlayer = (e) => {
+		console.log(e.target.id)
+		this.state.players.splice(e.target.id, 1);
+		this.setState({players: this.state.players});
+	}
+
 	addNewTeam = (e) => {
-		this.setState({ teamName: e.target.value });
+		this.setState({ teamName: e.target.value, message: '' });
 	}
 
 	submitHandler = (e) => {
 		e.preventDefault();
+		if(!this.state.teamName) {
+			this.setState({message: 'please fill in the teamName'})
+			return;
+		}
 		const data = {...this.state } 
 
 		this.props.dispatch(addNewTeam(data));
 		
-		this.setState({players: [], teamName: '', currentPlayer:''});
+		this.setState({players: [], teamName: '', currentPlayer:'', message: ''});
 	}
 
 	render() {
@@ -51,30 +63,37 @@ class Team extends Component {
 		return(
 			<div>
 				<Nav/>
-				<h1>hello</h1>
-				<form  onSubmit={this.submitHandler}>
-					<input className='input' type='text' name='teamName' 
-					onChange={this.addNewTeam} value={this.state.teamName} 
-					placeholder='enter team name'></input>
-					{
-						this.state.players.length === 11 ?  '' :
-						<input className='input' type='text' onKeyDown={this.handleKeyDown} 
-						name='players' id="player-name-input" placeholder='enter the player name'/>
-					}
+				<section className='componentWrapper'>
+					<form className='addingTeam' onSubmit={this.submitHandler}>
+						<input className='input' type='text' name='teamName' 
+						onChange={this.addNewTeam} value={this.state.teamName} 
+						placeholder='enter team name'></input>
+						{
+							this.state.message ? <p className='red'>{this.state.message}</p> : ''
+						}
+						{
+							this.state.players.length === 11 ?  '' :
+							<input className='input' type='text' onKeyDown={this.handleKeyDown} 
+							name='players' id="player-name-input" placeholder='enter the player name'/>
+						}
 
-					{
-						this.state.players.length === 11 ? 
-						<button className='button'>Submit team</button> 
-						: 
-						<button className='button' onClick={this.addNewPlayer}>Add</button>
-					}
-				</form>	
-				<div>
-					<h1 className='content is-large'>added players</h1>
-					{this.state.players.map((player, i) => {
-						return <span className='content is-large playerName' key={i}>{player} {(i == 10) ? '.' : ',' }</span>
-					})}
-				</div>
+						{
+							this.state.players.length === 11 ? 
+							<button className='button sign-up-button'>Submit team</button> 
+							: 
+							<button className='button sign-up-button' onClick={this.addNewPlayer}>Add</button>
+						}
+					</form>	
+					<div className='playersWrapper'>
+						{this.state.players.map((player, i) => {
+							return (<div className='player' key={i}>
+												<i className="far fa-user" />
+												<i onClick={this.removePlayer} id={i} className="fas fa-trash-alt"></i>
+												<span>{player}</span>
+											</div>)
+						})}
+					</div>
+				</section>
 			</div>
 		)
 	}

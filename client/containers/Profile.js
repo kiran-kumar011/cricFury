@@ -1,32 +1,9 @@
 import React, { Component } from 'react';
 import Nav from './Nav';
-import {Redirect, Link} from 'react-router-dom';
+import {Link} from 'react-router-dom';
 
 
 class Profile extends Component {
-
-	state = {
-		isTeamClicked: false,
-		redirect: false,
-		isMatchClicked: false,
-	}
-
-
-	isTeamClicked = () => {
-		this.setState({isTeamClicked: true, redirect: true});
-	}
-
-
-
-	renderRedirect = () => {
-		if(this.state.redirect && this.state.isTeamClicked) {
-			return <Redirect to='/create/team' />
-		} else if(this.state.redirect && this.state.isMatchClicked) {
-			return <Redirect to='/create/match' />
-		} else if(this.state.redirect && this.state.isUpdatingClicked) {
-			return <Redirect to='/score/update' />
-		}
-	}
 
 
 	render() {

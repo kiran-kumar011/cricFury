@@ -17,30 +17,30 @@ class Navigation extends Component {
 	}
 
 
-	redirectRoute = () => {
-		if(this.state.isLoggedOut) {
-			return <Redirect to='/' />
-		}
-	}
-
 
 	render() {
 		return(
 			<header>
-				{ this.redirectRoute() }
 				<div className='headerWrapper'>
 					<ul className='navigationheader'>
-						<li>
-							<NavLink className='basic' exact activeClassName='active' to='/'>
-								Home
-							</NavLink>
-						</li>
+						<div>
+							<li>
+								<NavLink className='basic' exact activeClassName='active' to='/'>
+									cricFury
+								</NavLink>
+							</li>
+						</div>
 						{
 							this.props.user.email ?
 							<div className='swapingHeader'>
 								<li>
-									<NavLink className='basic' activeClassName='active' to='/profile'>
-										Profile
+									<NavLink className='basic' activeClassName='active' to='/create/team'>
+										Teams
+									</NavLink>
+								</li>
+								<li>
+									<NavLink className='basic' activeClassName='active' to='/create/match'>
+										Matches
 									</NavLink>
 								</li>
 								<li onClick={this.handleLogout}>

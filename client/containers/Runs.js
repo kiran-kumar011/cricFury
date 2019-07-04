@@ -8,6 +8,7 @@ import Extras from './Extras';
 import { addRunsToServer, getLiveScoreUpdate, addNewBowlerToScoreCard } from '../actions';
 
 class Runs extends Component {
+
 	state = {
 		balls: JSON.parse(localStorage.getItem('ballsBowled')) || [],
 		striker: '',
@@ -28,11 +29,13 @@ class Runs extends Component {
 
  			if(this.state.balls.length == 6) {
  				this.state.balls.length = 0;
- 				this.setState({balls: this.state.balls, 
+ 				this.setState({
+ 					balls: this.state.balls, 
  					striker: this.state.nonStriker, 
  					nonStriker: this.state.striker, 
  					currentStriker: this.state.nonStriker, 
- 					bowler: '', isWicket: false 
+ 					bowler: '', 
+ 					isWicket: false 
  				});
  			} else {
  				this.setState({ balls: this.state.balls });
@@ -44,14 +47,19 @@ class Runs extends Component {
  			this.state.balls.push(run);
 
  			if(this.state.balls.length != 6) {
- 				this.setState({balls: this.state.balls, 
+ 				this.setState({
+ 					balls: this.state.balls, 
  					striker: this.state.nonStriker, 
  					nonStriker: this.state.striker, 
- 					currentStriker: this.state.nonStriker });
+ 					currentStriker: this.state.nonStriker 
+ 				});
  			}
  			if(this.state.balls.length == 6) {
  				this.state.balls.length = 0;
- 				this.setState({balls: this.state.balls, bowler: ''});
+ 				this.setState({
+ 					balls: this.state.balls, 
+ 					bowler: ''
+ 				});
  			}
  			this.postRunsToServer(run);
  		}
@@ -81,7 +89,8 @@ class Runs extends Component {
 		this.state.striker ? 
 		this.state.striker 
 		: 
-		this.setState({striker : this.state.currentStriker, 
+		this.setState({
+			striker : this.state.currentStriker, 
 			nonStriker: nonStriker[0]._id
 		})
 
@@ -91,7 +100,8 @@ class Runs extends Component {
 		this.state.currentStriker  ? 
 		this.state.currentStriker 
 		: 
-		this.setState({striker: striker[0]._id, 
+		this.setState({
+			striker: striker[0]._id, 
 			nonStriker: striker[1]._id, 
 			currentStriker: striker[0]._id, 
 			bowler: currentBowler
@@ -101,7 +111,7 @@ class Runs extends Component {
 
 
 	submitNewBowler = (e) => {
-		this.setState({ isNewBowler: true, nextBowler: e.target.value})
+		this.setState({nextBowler: e.target.value})
 	}
 
 
@@ -126,7 +136,13 @@ class Runs extends Component {
 
 		var inningsId = this.props.match.firstInnings._id;
 
-		const data = { run, batsmenId, bowlerId: id, inningsId, isOverComplete };
+		const data = { 
+			run, 
+			batsmenId, 
+			bowlerId: id, 
+			inningsId, 
+			isOverComplete 
+		};
 
 		console.log(data, 'before posting runs to the server');
 
@@ -138,11 +154,14 @@ class Runs extends Component {
 
 	postNewBowler = (e) => {
 		e.preventDefault();
-		var data = { bowlerId: this.state.nextBowler, inningsId: this.props.match.firstInnings._id }
+		var data = { 
+			bowlerId: this.state.nextBowler, 
+			inningsId: this.props.match.firstInnings._id 
+		}
 
 		this.props.dispatch(addNewBowlerToScoreCard(data)).then(res => {
-			console.log(res, 'after bowler added to the backend');
 			this.props.dispatch(getLiveScoreUpdate());
+			this.setState({ isNewBowler: true });
 		});
 
 	}
@@ -190,7 +209,7 @@ class Runs extends Component {
 			this.setState({ currentStriker: newBatsmen, 
 				striker: newBatsmen, 
 				nonStriker: oldNonStriker, 
-				isWicket: false 
+				isWicket: false
 			});
 			
 		}
@@ -231,17 +250,15 @@ class Runs extends Component {
 								})
 							}
 							</select>
-							{
-								(this.state.isNewBowler) ? 
-								<button onClick={this.postNewBowler}>submit</button> : ''
-							}
+							<button onClick={this.postNewBowler}>submit</button>
 						</div>
 						: 
 						''
 					}
 				</div>
 
-				<div className="updatingScoreWrapper">
+				<div className={this.state.balls.length == 0 && !this.state.isNewBowler ? 
+						'hide' : "updatingScoreWrapper"}>
 					<div className='updatingScore'>
 						<h1 className='content is-large'>add runs</h1>
 						{

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Nav from './Nav';
 import axios from 'axios';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 import { createNewMatch, getAllTeam, getMatchDetails } from '../actions';
  
@@ -51,31 +51,48 @@ class Match extends Component {
 		.filter((team, index) => this.state.team1 != team._id);
 
 		return(
-			<div className='control selectContailer container is-fluid'>
+			<div>
 				<Nav />
-				<form className="select is-multiple" onSubmit={this.submitTeams}>
-					<select onChange={this.selectTeam} name="team1">
-						<option>select team1</option>
-						{
-							(filterteam1.length ? filterteam1 : [])
-							.map((team, index) => {
-								return	<option key={index} value={team._id}>{team.teamName}</option>
-							})
-						}
-					</select>
-					<select onChange={this.selectTeam} name="team2">
-						<option>select team2</option>
-						{
-							(filterTeam2.length ? filterTeam2 : [])
-							.map((team, index) => {
-								return <option key={index} value={team._id}>{team.teamName}</option>
-							})
-						}
-					</select>
-					<input className='input' type='text' onChange={this.selectTeam} name='ground' 
-					placeholder='enter the ground name' value={this.state.ground}></input>
-					<button type='submit'>submit</button>
-				</form>
+				<section className='macthWrapper'>
+					<NavLink className='live' activeClassName='active' to='/live/update'>
+						Ongoing match
+					</NavLink>
+					<form className='matchForm' onSubmit={this.submitTeams}>
+						<div className="field select">
+						  <div className="control">
+						    <div className="select is-info" >
+						      <select onChange={this.selectTeam} name="team1">
+						        <option>select team1</option>
+						        {
+						        	(filterteam1.length ? filterteam1 : [])
+						        	.map((team, index) => {
+						        		return	<option key={index} value={team._id}>{team.teamName}</option>
+						        	})
+						        }
+						      </select>
+						    </div>
+						  </div>
+						</div>
+						<div className="field">
+						  <div className="control">
+						    <div className="select is-info" >
+						      <select onChange={this.selectTeam} name="team2">
+						        <option>select team2</option>
+						        {
+						        	(filterTeam2.length ? filterTeam2 : [])
+						        	.map((team, index) => {
+						        		return <option key={index} value={team._id}>{team.teamName}</option>
+						        	})
+						        }
+						      </select>
+						    </div>
+						  </div>
+						</div>
+						<input className='input' type='text' onChange={this.selectTeam} name='ground' 
+						placeholder='enter the ground name' value={this.state.ground}></input>
+						<button className='button' type='submit'>Submit</button>
+					</form>
+				</section>
 			</div>
 		)
 	}

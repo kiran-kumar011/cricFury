@@ -25,6 +25,11 @@ class SignUp extends Component {
 		e.preventDefault();
 		const data = {...this.state};
 		console.log(this.state);
+		if(this.state.password.length < 6) {
+			this.setState({message: '*password is weak'});
+			return;
+		}
+
 
 		this.props.dispatch(postNewUser(data)).then(res => {
 			console.log(res, 'after signing up user');
@@ -51,31 +56,29 @@ class SignUp extends Component {
 					<h1 className='sign-up-header'>Sign Up</h1>
 					<p className='sign-up-content'>Have an account?</p>
 					<form onSubmit={this.submitHandler}>
-						<div className='input'>
-							<input className='default' 
+						<div className='signIn'>
+							<input className='input' 
 							type='text' name='username' 
 							value={this.state.username} 
 							onChange={this.handleChange} 
 							placeholder='Username'/>
-						</div>
-						<div className='input'>
-							<input className='default' type='email' 
+
+							<input className='input' type='email' 
 							name='email' onChange={this.handleChange} 
 							value={this.state.email} placeholder='Email'/>
-						</div>
-						<div className='input'>
-							<input className='default' type='password' 
+
+							<input className='input' type='password' 
 							name='password' onChange={this.handleChange} 
 							value={this.state.password}  placeholder='Password'/>
-						</div>
-						{
-							this.state.message ? 
-							<h1 className={this.state.isSignedUp ? 'green' : 'red'}>{this.state.message}</h1> 
-							: 
-							''
-						}
-						<div>
-							<button className='sign-up-button' type='submit'>Sign Up</button>
+							{
+								this.state.message ? 
+								<h1 className={this.state.isSignedUp ? 'green' : 'red'}>{this.state.message}</h1> 
+								: 
+								''
+							}
+							<div>
+								<button className='sign-up-button' type='submit'>Sign Up</button>
+							</div>
 						</div>
 					</form>
 				</div>

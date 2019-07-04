@@ -29,12 +29,11 @@ class Wickets extends Component {
 			this.postToAddNewWicket(localStorage.getItem('currentStriker'),  id, e.target.value);
 
 		} else {
-			console.log('take got out batsmen id from admin');
+			console.log('take got out batsmen id from admin and handle for runout and caught out');
 		}
 	}
 
 	postToAddNewWicket = (batsmenId, bowlerId, typeOfWicket) => {
-
 		var isOverComplete = localStorage.getItem('ballsBowled').length == 0 ? true : false;
 
 		var data = {
@@ -45,14 +44,13 @@ class Wickets extends Component {
 			inningsId: this.props.match.firstInnings._id,
 		}
 
-		this.props.dispatch(updateWickets(data, this.getMatchData()))
-		
-		this.setState({  isWicket: true, typeOfWicket: typeOfWicket});
-
+		this.props.dispatch(updateWickets(data)).then(res => {
+			this.setState({  isWicket: true, typeOfWicket: typeOfWicket});
+			this.props.dispatch(getLiveScoreUpdate())
+		})
 	}
 
 	selectNewBatsmen = (e) => {
-		console.log(e.target.value);
 		this.setState({ newBatsmen : e.target.value, isSelected: true });
 	}
 
@@ -64,15 +62,12 @@ class Wickets extends Component {
 
 		var data = { playerId: localStorage.getItem('newBatsmen'), position: length, inningsId: id }
 
-		this.props.dispatch(addNewBatsmen(data, this.getMatchData));
+		this.props.dispatch(addNewBatsmen(data)).then(res => {
+			this.props.dispatch(getLiveScoreUpdate());
+			this.props.wicket(this.state.typeOfWicket);
+		});
 	}
 
-	getMatchData = () => {
-		this.props.dispatch(getLiveScoreUpdate())
-
-		this.props.wicket(this.state.typeOfWicket);
-
-	}
 
 	render() {
 

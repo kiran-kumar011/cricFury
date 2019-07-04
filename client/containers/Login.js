@@ -26,6 +26,8 @@ class Login extends Component {
 
 	submitHandler = (e) => {
 		e.preventDefault();
+
+		
 		var data = {...this.state};
 
 		this.props.dispatch(verifyLoggedInUser(data)).then(res => {
@@ -56,12 +58,12 @@ class Login extends Component {
 					<p className='sign-up-content'>Need an account?</p>
 					<form onSubmit={this.submitHandler}>
 						<div className='signIn'>
-							<div className='input'>
-								<input className='default' type='text' name='email' value={this.state.email} onChange={this.handleChange} placeholder='Email'/>
-							</div>
-							<div className='input'>
-								<input className='default' type='password' name='password' value={this.state.password} onChange={this.handleChange} placeholder='Password'/>
-							</div>
+							<input className='input' type='text' name='email' value={this.state.email} 
+							onChange={this.handleChange} placeholder='Email'/>
+
+							<input className='input' type='password' 
+								name='password' value={this.state.password} 
+								onChange={this.handleChange} placeholder='Password'/>
 							{
 								this.state.message ? <h1 className={this.state.isLoggedIn ? 'green': 'red'}>{this.state.message}</h1> : ''
 							}
