@@ -79,9 +79,9 @@ class Team extends Component {
 
 						{
 							this.state.players.length === 11 ? 
-							<button className='button sign-up-button'>Submit team</button> 
+							<button  className='sign-up-button'>Submit team</button> 
 							: 
-							<button className='button sign-up-button' onClick={this.addNewPlayer}>Add</button>
+							<button className='sign-up-button' onClick={this.addNewPlayer}>Add</button>
 						}
 					</form>	
 					<div className='playersWrapper'>

@@ -28,17 +28,17 @@ class Match extends Component {
 		const data = {...this.state}
 
 		this.props.dispatch(createNewMatch(data)).then(res => {
-			console.log(res, 'after action creator is returning promise');
+			console.log(res.success, 'after action creator is returning promise');
 			
-			if(res.success) {
-				this.props.dispatch(getMatchDetails()).then(res => {
-					console.log(res, '..........matchdetails before redirecting to scoring');
+			
+			this.props.dispatch(getMatchDetails()).then(res => {
+				console.log(res, '..........matchdetails before redirecting to scoring');
 
-					localStorage.setItem('matchId', res.data._id)
-					this.setState({team1:'', team2: '', ground: ''});
-					this.props.history.push('/live/update');
-				})
-			}
+				localStorage.setItem('matchId', res.data._id)
+				this.setState({team1:'', team2: '', ground: ''});
+				this.props.history.push('/live/update');
+			})
+			
 		});
 
 	}
@@ -57,7 +57,7 @@ class Match extends Component {
 					<NavLink className='live' activeClassName='active' to='/live/update'>
 						Ongoing match
 					</NavLink>
-					<form className='matchForm' onSubmit={this.submitTeams}>
+					<form onSubmit={ this.submitTeams }>
 						<div className="field select">
 						  <div className="control">
 						    <div className="select is-info" >
@@ -90,7 +90,7 @@ class Match extends Component {
 						</div>
 						<input className='input' type='text' onChange={this.selectTeam} name='ground' 
 						placeholder='enter the ground name' value={this.state.ground}></input>
-						<button className='button' type='submit'>Submit</button>
+						<button className='sign-up-button' onClick={ this.submitTeams } >Submit</button>
 					</form>
 				</section>
 			</div>

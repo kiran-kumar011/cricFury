@@ -257,8 +257,7 @@ class Runs extends Component {
 					}
 				</div>
 
-				<div className={this.state.balls.length == 0 && !this.state.isNewBowler ? 
-						'hide' : "updatingScoreWrapper"}>
+				<div className="updatingScoreWrapper">
 					<div className='updatingScore'>
 						<h1 className='content is-large'>add runs</h1>
 						{

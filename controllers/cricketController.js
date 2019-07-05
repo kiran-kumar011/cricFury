@@ -179,7 +179,7 @@ exports.getMatchDetails = (req, res) => {
 
 exports.updateOversTossAndOptedTo = (req, res) => {
 
-
+	console.log(req.body, '................updating toss route.........')
 	Match.findById({ _id: req.session.matchId }).exec((err, match) => {
 		if(err) return res.status(500).json({error: err});
 
