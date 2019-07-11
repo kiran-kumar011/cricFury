@@ -21,23 +21,22 @@ $basicColor: #F5870C;
 // $header: #E3A741;
 
 
-body, html {
+body {
+  // background-color: rgba(30,144,255,0.1);
   text-transform: capitalize;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(30,144,255,0.1);
 }
 
 p {
   font-size: 25px;
 }
 
-#root {
-  background-color: rgba(30,144,255,0.1);
-  height: 100vh;
-  width: 100vw;
-  background-size: cover;
-}
+// #root {
+//   display: block;
+//   background-color: rgba(30,144,255,0.1);
+//   height: auto;
+//   width: 100vw;
+//   // background-size: cover;
+// }
 
 .primary-text {
   font-size: 20px;
@@ -92,15 +91,6 @@ input:focus, button:focus {
 }
 
 
-.input {
-  display: block;
-  padding: 10px 10px;
-  font-size: 58px;
-  margin-bottom: 10px;
-
-  // text-align: center;
-}
-
 
 // header navigation bar styling.
 .headerWrapper {
@@ -125,11 +115,11 @@ input:focus, button:focus {
 
 
 .componentWrapper {
-  // padding: 20px;
+  padding: 20px;
   width: 85vw;
   // height: 100vh;
-  margin: 20px auto;
-  // box-sizing: border-box;
+  margin: 0 auto;
+  box-sizing: border-box;
   // transform: translate(0, 30%);
   .input {
     display: block;
@@ -148,10 +138,10 @@ input:focus, button:focus {
     color: white;  
     margin-top:15px;
   }
-  button:hover {
-    color: white;
-    background-color: rgba(70,130,180,1);
-  }
+  // button:hover {
+  //   color: white;
+  //   background-color: rgba(70,130,180,1);
+  // }
 }
 
 
@@ -265,18 +255,18 @@ input:focus, button:focus {
     outline: #209cee;
   }
 
-  button:hover {
-    color: white;
-    // background-color: rgba(70,130,180,1);
-    box-sizing: border-box;
-    font-size: 20px; 
-    padding: 10px 20px;
-    border-radius: 5px; 
-    margin: 10px;
-    box-shadow: 0 0 3px 1px rgba(0,0,0,0.2);
-    background-color: $steelBlue;
-    color: white;
-  }
+  // button:hover {
+  //   color: white;
+  //   // background-color: rgba(70,130,180,1);
+  //   box-sizing: border-box;
+  //   font-size: 20px; 
+  //   padding: 10px 20px;
+  //   border-radius: 5px; 
+  //   margin: 10px;
+  //   box-shadow: 0 0 3px 1px rgba(0,0,0,0.2);
+  //   background-color: $steelBlue;
+  //   color: white;
+  // }
   .live {
     position: absolute;
     top: -50%;
@@ -326,6 +316,7 @@ input:focus, button:focus {
   display: grid;
   grid-template-columns: 100px 35px 35px 35px 35px 65px;
   grid-gap: 10px;
+  border-bottom: 1px solid rgba(0,0,0,0.1);
 }
 
 .bowlerScoreList {
@@ -333,6 +324,7 @@ input:focus, button:focus {
   display: grid;
   grid-template-columns: 100px 40px 40px 40px 40px 40px 40px 50px;
   grid-gap: 10px;
+  border-bottom: 1px solid rgba(0,0,0,0.1);
 }
 
 .scoreCardWrapper {
@@ -342,6 +334,10 @@ input:focus, button:focus {
   justify-content: space-between;
   // box-shadow: 0 0 2px 1px rgba(0,0,0,1);
   border-radius: 10px;
+  .text {
+    margin-bottom: 5px;
+    margin-top: 5px;
+  }
 }
 
 .childScoreCardWrapper {
@@ -349,8 +345,12 @@ input:focus, button:focus {
   padding: 20px;
   border: 1px solid rgba(0,0,0,0.1);
   border-radius: 10px;
-  // background-color: rgba(0,0,0,0.05);
-  box-shadow: 0 0 3px 3px rgba(0,0,0,1);
+  box-shadow: 0 0 3px 3px rgba(0,0,0,0.1);
+}
+
+
+h1 span {
+  margin-left: 30px; 
 }
 
 // .overs {
@@ -375,11 +375,21 @@ input:focus, button:focus {
 
 .openerForm {
   display: grid;
-  // flex-directions: columns;
   grid-template-columns: 1fr 1fr;
   grid-gap: 50px;
   justify-content: space-around;
-  // background-color: red;
+  select {
+    width: 300px;
+    margin-bottom: 10px;
+  }
+  .prime-button {
+    box-sizing: border-box;
+    font-size: 20px; 
+    padding: 10px 20px;
+    border-radius: 5px; 
+    margin: 10px;
+    box-shadow: 0 0 3px 1px rgba(0,0,0,0.2);
+  }
 }
 
 .openerContainer {
@@ -407,6 +417,9 @@ input:focus, button:focus {
 .out {
   color: red;
 }
+.playing {
+  font-weight: 900;
+}
 
 
 .green {
@@ -430,7 +443,7 @@ input:focus, button:focus {
   padding: 20px;
   width: 25vw;
   margin: 0px auto;
-  transform: translate(0, 30%);
+  // transform: translate(0, 30%);
   border-radius: 10px;
   text-align: center;
   box-shadow: 0 0 5px 2px rgba(0,0,0,0.2);
@@ -443,6 +456,22 @@ input:focus, button:focus {
     box-shadow: 0 0 3px 1px rgba(0,0,0,0.2);
     background-color: $steelBlue;
     color: white;
+    overflow: hidden;
+    white-space: nowrap;
+    // text-overflow: ellipsis;
   }
+}
+
+
+// scoring wrapper styling.
+.scoringWrapper {
+  // background-color: rgba(95,158,160,0.1);
+  // background-image: linear-gradient(to bottom, rgba(95,158,160,0.51), rgba(65,105,225,0.51)) ;
+  // box-shadow: 0 0 3px 1px rgba(0,0,0,0.2);
+  // margin: 50px;
+  // box-sizing: border-box;
+  padding: 20px;
+  // border-radius: 15px; 
+  // border: 1px solid rgba(0,0,0,0.1);
 }
 

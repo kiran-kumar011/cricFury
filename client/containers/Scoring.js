@@ -80,59 +80,61 @@ class Scoring extends Component {
 			<div>
 				<Nav />
 				<div className='scoringWrapper'>
-					<div className={ match.tossWonBy ? 'hide' : 'updateToss' }>
-						{
-							match.tossWonBy ? 
-							''
-							: 
-							(<div>
-								<div className='oversWrapper'>
-									<input className='input' placeholder='enter the overs' onChange={this.submitOver} 
-									value={this.state.overs} type='text' name='overs' />
-								</div>
-								<h1 className='primary-text'>toss won by</h1>
-								<div className='matchbtns'>
-									<button className={this.state.isTossWonteam1 ? 'activeButton prime-button': 'inactiveButton prime-button'} 
-										onClick={() => this.setState({tossWonBy: match.team1._id, message: '',isTossWonteam1: true, isTossWonteam2: false})}>
-										{match._id ? match.team1.teamName : 'team1'}
-									</button>
-									<button className={this.state.isTossWonteam2 ? 'activeButton prime-button': 'inactiveButton prime-button'} 
-										onClick={() => this.setState({tossWonBy: match.team2._id, message: '',isTossWonteam2: true, isTossWonteam1: false})}>
-										{match._id ? match.team2.teamName : 'team2'}
-									</button>
-								</div>
-								<div>
-									<h1 className='primary-text'>elected to</h1>
+					<div >
+						<div className={ match.tossWonBy ? 'hide' : 'updateToss' }>
+							{
+								match.tossWonBy ? 
+								''
+								: 
+								(<div>
+									<div className='oversWrapper'>
+										<input className='input' placeholder='enter the overs' onChange={this.submitOver} 
+										value={this.state.overs} type='number' name='overs' />
+									</div>
+									<h1 className='primary-text'>toss won by</h1>
 									<div className='matchbtns'>
-										<button 
-											className={this.state.isOptedToBat ? 'activeButton prime-button': 'inactiveButton prime-button'}
-											onClick={() => this.setState({isOptedToBat: true, message: '',isOptedToBowl: false, optedTo: 'bat'})}>
-											bat
+										<button className={this.state.isTossWonteam1 ? 'activeButton prime-button': 'inactiveButton prime-button'} 
+											onClick={() => this.setState({tossWonBy: match.team1._id, message: '',isTossWonteam1: true, isTossWonteam2: false})}>
+											{match._id ? match.team1.teamName : 'team1'}
 										</button>
-										<button className={this.state.isOptedToBowl ? 'activeButton prime-button': 'inactiveButton prime-button'} 
-											onClick={() => this.setState({isOptedToBat: false, message: '',isOptedToBowl: true, optedTo: 'bowl'})}>
-											bowl
+										<button className={this.state.isTossWonteam2 ? 'activeButton prime-button': 'inactiveButton prime-button'} 
+											onClick={() => this.setState({tossWonBy: match.team2._id, message: '',isTossWonteam2: true, isTossWonteam1: false})}>
+											{match._id ? match.team2.teamName : 'team2'}
 										</button>
 									</div>
-								</div>								
-							</div>
-							)
-						}
-						{
-							this.state.message ? <h1 className='red'>{this.state.message}</h1> : ''
-						}
-						{
-							match.optedTo ? '' : <button type='submit' className='prime-button' onClick={this.submitMatchData}>submit</button>
-						}
+									<div>
+										<h1 className='primary-text'>elected to</h1>
+										<div className='matchbtns'>
+											<button 
+												className={this.state.isOptedToBat ? 'activeButton prime-button': 'inactiveButton prime-button'}
+												onClick={() => this.setState({isOptedToBat: true, message: '',isOptedToBowl: false, optedTo: 'bat'})}>
+												bat
+											</button>
+											<button className={this.state.isOptedToBowl ? 'activeButton prime-button': 'inactiveButton prime-button'} 
+												onClick={() => this.setState({isOptedToBat: false, message: '',isOptedToBowl: true, optedTo: 'bowl'})}>
+												bowl
+											</button>
+										</div>
+									</div>								
+								</div>
+								)
+							}
+							{
+								this.state.message ? <h1 className='red'>{this.state.message}</h1> : ''
+							}
+							{
+								match.optedTo ? '' : <button type='submit' className='prime-button' onClick={this.submitMatchData}>submit</button>
+							}
+						</div>
 					</div>
-				</div>
 
-				{
-					match.optedTo ? 
-					<UpdateScore optedTo={this.state.optedTo} tossWonBy={this.state.tossWonBy} players={match.players}/>
-					: 
-					''
-				}
+					{
+						match.optedTo ? 
+						<UpdateScore optedTo={this.state.optedTo} tossWonBy={this.state.tossWonBy} players={match.players}/>
+						: 
+						''
+					}
+				</div>
 			</div>
 		)
 	}

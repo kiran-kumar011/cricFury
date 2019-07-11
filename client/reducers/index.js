@@ -1,4 +1,4 @@
-import {createStore, combineReducers, applyMiddleware, compose} from 'redux';
+import { combineReducers } from 'redux';
 import { currentUser, recentlyAddedTeam, addingMatchData, addingBatsmen, addingBowlers } from "./currentUser";
 // import devToolsEnhancer from 'remote-redux-devtools';
 
@@ -10,7 +10,7 @@ const rootReducer = combineReducers({
   batsmens: addingBatsmen,
   bowlers: addingBowlers,
 });
- 
+
 
 
 

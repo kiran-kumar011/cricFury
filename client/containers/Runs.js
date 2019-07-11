@@ -17,8 +17,8 @@ class Runs extends Component {
 		bowler: localStorage.getItem('currentBowler') || '',
 		inningsId: '',
 		nextBowler: localStorage.getItem('newBowler') || '',
-		isNewBowler: false,
 		isWicket: false,
+		isOverComplete: false,
 	}
 
 	updateRuns = (e) => {
@@ -34,8 +34,8 @@ class Runs extends Component {
  					striker: this.state.nonStriker, 
  					nonStriker: this.state.striker, 
  					currentStriker: this.state.nonStriker, 
- 					bowler: '', 
- 					isWicket: false 
+ 					bowler: '',
+ 					isOverComplete: true,
  				});
  			} else {
  				this.setState({ balls: this.state.balls });
@@ -51,14 +51,15 @@ class Runs extends Component {
  					balls: this.state.balls, 
  					striker: this.state.nonStriker, 
  					nonStriker: this.state.striker, 
- 					currentStriker: this.state.nonStriker 
+ 					currentStriker: this.state.nonStriker,
  				});
  			}
  			if(this.state.balls.length == 6) {
  				this.state.balls.length = 0;
  				this.setState({
  					balls: this.state.balls, 
- 					bowler: ''
+ 					bowler: '',
+ 					isOverComplete: true,
  				});
  			}
  			this.postRunsToServer(run);
@@ -69,9 +70,6 @@ class Runs extends Component {
 
 	componentDidUpdate() {
 		console.log('componentDidUpdate');
-
-		// this is to update the balls count in parent component...
-		this.props.balls(this.state.balls.length);
 
 		// to find the playing batsmens and bowlers in the match.
 		var { batsmanScoreCard, bowlingScoreCard, numBallsBowled } = this.props.match.firstInnings;
@@ -161,10 +159,16 @@ class Runs extends Component {
 
 		this.props.dispatch(addNewBowlerToScoreCard(data)).then(res => {
 			this.props.dispatch(getLiveScoreUpdate());
-			this.setState({ isNewBowler: true });
+			this.setState({ isOverComplete: false });
 		});
 
 	}
+
+
+	updateWicketFallen = () => {
+		this.setState({ isWicket: true })
+	}
+
 
 
 	addingWicketsToBallsBowledArr = (type) => {
@@ -230,14 +234,15 @@ class Runs extends Component {
 
 		localStorage.setItem('ballsBowled', JSON.stringify(this.state.balls));
 
+		var batsmens = this.props.match.firstInnings ? this.props.match.firstInnings.battingTeamId.players : [];
 
 		const scores = [0, 1, 2, 3, 4, 6];
 
 		return(
 			<div >
-				<div>
-					{
-						((this.state.balls.length == 0) && (overs > 0)) ?
+				{
+					this.state.isOverComplete  ? 
+					(
 						<div>
 							<select className="select " name='bowler' onChange={this.submitNewBowler} >
 								<option>select new bowler</option>
@@ -252,31 +257,72 @@ class Runs extends Component {
 							</select>
 							<button onClick={this.postNewBowler}>submit</button>
 						</div>
-						: 
-						''
-					}
-				</div>
+					) 
+					:
+					(
+						<div className="updatingScoreWrapper">
+							<div className='updatingScore'>
+								<h1 className='content is-large'>add runs</h1>
+								{
+									scores.map((num, index) => {
+										return <button onClick={this.updateRuns} value={num} 
+										className='button is-outlined' key={index}>
+											{num}
+										</button>
+									})
+								}
+							</div>
+							<div>
+								<Wickets updateWicket={this.updateCurrentStriker}
+									isWicket={this.updateWicketFallen} 
+									wicket={this.addingWicketsToBallsBowledArr} />
+							</div>	
+						</div>
+					) 
+				)
+				}
 
-				<div className="updatingScoreWrapper">
-					<div className='updatingScore'>
-						<h1 className='content is-large'>add runs</h1>
-						{
-							scores.map((num, index) => {
-								return <button onClick={this.updateRuns} value={num} 
-								className='button is-outlined' key={index}>
-									{num}
-								</button>
-							})
-						}
-					</div>
-					<div>
-						<Wickets updateWicket={this.updateCurrentStriker} 
-							ballsArr={this.state.balls} 
-							getMatchData={this.getMatchData} 
-							wicket={this.addingWicketsToBallsBowledArr} 
-							isWicket={this.state.isWicket}/>
-					</div>
-				</div>
+				{
+					// this.state.isOverComplete  ? 
+					// (
+					// 	<div>
+					// 		<select className="select " name='bowler' onChange={this.submitNewBowler} >
+					// 			<option>select new bowler</option>
+					// 		{
+					// 			bowlers.map(bowlr => {
+					// 				return <option className='content is-large' key={bowlr._id} 
+					// 					value={bowlr._id}>
+					// 						{bowlr.playerName}
+					// 					</option>
+					// 			})
+					// 		}
+					// 		</select>
+					// 		<button onClick={this.postNewBowler}>submit</button>
+					// 	</div>
+					// ) 
+					// :
+					// (
+					// 	<div className="updatingScoreWrapper">
+					// 		<div className='updatingScore'>
+					// 			<h1 className='content is-large'>add runs</h1>
+					// 			{
+					// 				scores.map((num, index) => {
+					// 					return <button onClick={this.updateRuns} value={num} 
+					// 					className='button is-outlined' key={index}>
+					// 						{num}
+					// 					</button>
+					// 				})
+					// 			}
+					// 		</div>
+					// 		<div>
+					// 			<Wickets updateWicket={this.updateCurrentStriker}
+					// 				isWicket={this.updateWicketFallen} 
+					// 				wicket={this.addingWicketsToBallsBowledArr} />
+					// 		</div>	
+					// 	</div>
+					// ) 
+
+				}
 			</div>
 			
 		)

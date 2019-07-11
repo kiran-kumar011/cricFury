@@ -42,9 +42,9 @@ table {
 	border-spacing: 0;
 }
 
-/*  main body styling */
+/*  main body styling 
 /* header styling */
-.header {
+/*.header {
 	display: flex;
 	justify-content: space-around;
 	padding: 20px;
@@ -54,10 +54,10 @@ a {
 	text-transform: capitalize;
 	text-decoration: none;
 	font-size: 30px;
-}
+}*/
 
 /*. login form styling. */
-.login-wrapper {
+/*.login-wrapper {
 	width: 800px;
 	margin: 0 auto;
 	display: flex;
@@ -74,8 +74,8 @@ a {
 	width: 300px;
 	margin: 0 auto;
 }
-
-.add-form input {
+*/
+/*.add-form input {
 	width: 300px;
 	height: 30px;
 	margin: 10px;
@@ -107,9 +107,8 @@ a {
 
 .addTeam label {
 	width: 200px;
-	/*padding: 30px;*/
 }
-
+*/
 
 
 

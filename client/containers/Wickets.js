@@ -9,12 +9,11 @@ class Wickets extends Component {
 
 	state = {
 		newBatsmen: localStorage.getItem('newBatsmen') || '',
-		isWicket: false,
-		isSelected: false,
 		typeOfWicket: '',
 	}
 
 	handlingWicket = (e) => {
+		this.props.isWicket();
 		if(e.target.value == 'bowled' || e.target.value == 'lbw' || e.target.value == 'stumped') {
 			var { bowlingScoreCard } = this.props.match.firstInnings;
 			var id = '';
@@ -45,13 +44,13 @@ class Wickets extends Component {
 		}
 
 		this.props.dispatch(updateWickets(data)).then(res => {
-			this.setState({  isWicket: true, typeOfWicket: typeOfWicket});
+			this.setState({ typeOfWicket: typeOfWicket});
 			this.props.dispatch(getLiveScoreUpdate())
 		})
 	}
 
 	selectNewBatsmen = (e) => {
-		this.setState({ newBatsmen : e.target.value, isSelected: true });
+		this.setState({ newBatsmen : e.target.value});
 	}
 
 
@@ -79,32 +78,7 @@ class Wickets extends Component {
 
 		return(
 			<div>
-				<div>
-					{
-						this.state.isWicket ? 
-						<div>
-							<select onChange={this.selectNewBatsmen}>
-								{
-									batsmens.map(batsmen => {
-										return <option key={batsmen._id} value={batsmen._id}>{batsmen.playerName}</option>
-									})
-								}
-							</select>
-						</div>
-						:
-						''
-					}
-					{
-						this.state.isSelected ? 
-						<button onClick={this.posttoAddNewBatsmen}>submit</button> : ''
-					}
-					{
-						this.props.isWicket ? 
-						<button onClick={this.props.updateWicket}>update Batsmen</button>
-						:
-						''
-					}
-				</div>
+		
 				<div className='updatingScore'>
 					<h1 className='content is-large'>add wickets</h1>
 					{
@@ -124,7 +98,6 @@ class Wickets extends Component {
 function mapStateToProps(state) {
 	return {
 		match: state.match,
-
 	}
 }
 

@@ -23,16 +23,9 @@ class Update extends Component {
 
 
 	componentDidMount = () => {
-		this.getMatchData();
+		this.props.dispatch(getUpdatedInnings());
 	}
 
-	getMatchData = () => {
-		this.props.dispatch(getUpdatedInnings())
-	}
-
-	getNumberOfballsBowled = (count) => {
-		this.setState({balls: count});
-	}
 
 
 	handleChange = (e) => {
@@ -62,7 +55,7 @@ class Update extends Component {
 
 	render() {
 
-		const { battingTeamId, bowlingTeamId, batsmanScoreCard, numScore } = this.props.match.firstInnings;
+		const { battingTeamId, bowlingTeamId, batsmanScoreCard, numScore, numWickets, numOversBowled } = this.props.match.firstInnings;
 		const { tossWonBy , optedTo, team1, team2 } = this.props.match;
 
 		const toss = tossWonBy && battingTeamId ? ((tossWonBy == battingTeamId._id ) ? battingTeamId : bowlingTeamId) : {} ; 
@@ -71,6 +64,8 @@ class Update extends Component {
 		const bowlers = bowlingTeamId ? bowlingTeamId.players : [];
 		const batsmenArr = batsmanScoreCard  ? batsmanScoreCard : [];
 		const score = numScore ? numScore : 0;
+
+		var bowls = JSON.parse(localStorage.getItem('ballsBowled')) ? JSON.parse(localStorage.getItem('ballsBowled')).length : 0;
 
 		return(
 			<div>
@@ -81,8 +76,10 @@ class Update extends Component {
 								toss won by {toss.teamName ? toss.teamName : ''} and elected to  {(optedTo ? optedTo : '')} first
 							</h1>
 							<h1 className='content is-large'>
-								{(battingTeamId ?  battingTeamId.teamName : '')} : {score}/0 
+								{(battingTeamId ?  battingTeamId.teamName : '')} : {score}/{numWickets} 
+								<span>overs: {`${numOversBowled}.${bowls}` }</span>
 							</h1>
+
 						</div>		
 					}
 
@@ -97,6 +94,7 @@ class Update extends Component {
 							<div className='openerContainer'>
 								<form className="select is-multiple" onSubmit={this.submitPlayers}>
 									<div className="openerForm">
+
 										<div className="openerBatsmen">
 											<h1 className='content is-large'>select batsman</h1>
 											<select onChange={this.handleChange} name='player1'>
@@ -131,7 +129,7 @@ class Update extends Component {
 										
 										{
 											this.state.player1 && this.state.player2 && this.state.bowler ? 
-											(<button className='button' type='submit'>submit</button>) : ''
+											(<button className='prime-button' type='submit'>submit</button>) : ''
 										}
 									</div>
 								</form>
@@ -143,7 +141,7 @@ class Update extends Component {
 						batsmenArr.length >= 2 ?
 						<div className='updatingScoreWrapper'>
 							<div className='buttons'>
-								<Runs balls={this.getNumberOfballsBowled} />
+								<Runs />
 							</div>
 						</div>
 						:
