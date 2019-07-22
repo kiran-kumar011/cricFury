@@ -28,12 +28,9 @@ class Match extends Component {
 		const data = {...this.state}
 
 		this.props.dispatch(createNewMatch(data)).then(res => {
-			console.log(res.success, 'after action creator is returning promise');
-			
-			
-			this.props.dispatch(getMatchDetails()).then(res => {
-				console.log(res, '..........matchdetails before redirecting to scoring');
 
+			this.props.dispatch(getMatchDetails()).then(res => {
+				
 				localStorage.setItem('matchId', res.data._id)
 				this.setState({team1:'', team2: '', ground: ''});
 				this.props.history.push('/live/update');

@@ -49,7 +49,7 @@ class App extends Component {
         <Route path='/live/update' component={ScoringBoard} />
         <div> 
           {
-            // this.state.isLoading ? <Spinner /> : ''
+            this.state.isLoading ? <Spinner /> : ''
           }
         </div>
       </Router>

@@ -43,10 +43,8 @@ class Update extends Component {
 		}
 
 		this.props.dispatch(postOpenersData(data)).then(res => {
-			console.log(res, 'after the post openers data promise returns');
 			
 			this.props.dispatch(getLiveScoreUpdate()).then(res => {
-				console.log(res.match, 'after the getLiveScoreUpdate promise returns');
 				this.setState({player1: '', player2: '', bowler: '', batsmen: ''})
 			});
 		})	

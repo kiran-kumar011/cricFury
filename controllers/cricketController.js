@@ -84,68 +84,127 @@ exports.get_hostMatch = (req, res) => {
 
 exports.post_hostMatch = (req, res) => {
 
-	Match.findOne({ team1: req.body.team1, team2: req.body.team2 }, (err, match) => {
-		if(err) return res.send(err);
-		if(!match) {
-			var record = new Match();
-			record.team1 = req.body.team1;
-			record.team2 = req.body.team2;
-			record.ground = req.body.ground;
+	var record = new Match();
+	record.team1 = req.body.team1;
+	record.team2 = req.body.team2;
+	record.ground = req.body.ground;
 
-			record.save((err, match) => {
-				if(err) return console.error(err);
-				if(match) {
-					req.session.matchId = match._id;
+	record.save((err, match) => {
+		if(err) return console.error(err);
+		if(match) {
+			req.session.matchId = match._id;
 
-					Team.findByIdAndUpdate(req.body.team1, 
-						{ $push: {matchesId: match.id}}, 
-						{new: true}, 
-						(err, savedTeam1) => {
+			Team.findByIdAndUpdate(req.body.team1, 
+				{ $push: {matchesId: match.id}}, 
+				{new: true}, 
+				(err, savedTeam1) => {
 
+				if(err) return res.status(500).json({error: err});
+				savedTeam1.players.forEach(id => {
+
+					Player.findByIdAndUpdate(id, 
+						{ $push: {numMatchesPlayed: match.id}}, 
+						{new: true}, (err, player) => {
 						if(err) return res.status(500).json({error: err});
-						savedTeam1.players.forEach(id => {
+					})
+				})
 
-							Player.findByIdAndUpdate(id, 
-								{ $push: {numMatchesPlayed: match.id}}, 
-								{new: true}, (err, player) => {
-								if(err) return res.status(500).json({error: err});
-							})
-						})
+				Team.findByIdAndUpdate(req.body.team2, 
+					{ $push: {matchesId: match.id}}, 
+					{new: true}, 
+					(err, savedteam2) => {
+					if(err) return res.status(500).json({error: err});
+					
+					savedteam2.players.forEach(id => {
 
-						Team.findByIdAndUpdate(req.body.team2, 
-							{ $push: {matchesId: match.id}}, 
+						Player.findByIdAndUpdate(id, 
+							{ $push: {numMatchesPlayed: match.id}}, 
 							{new: true}, 
-							(err, savedteam2) => {
-							if(err) return res.status(500).json({error: err});
-							
-							savedteam2.players.forEach(id => {
-
-								Player.findByIdAndUpdate(id, 
-									{ $push: {numMatchesPlayed: match.id}}, 
-									{new: true}, 
-									(err, player) => {
-										
-								if(err) return res.status(500).json({error: err});
-								})
-							})
+							(err, player) => {
+								
+						if(err) return res.status(500).json({error: err});
 						})
 					})
-
-					Admin.findByIdAndUpdate(req.session.userId, 
-						{ $push: { matches: match.id}}, 
-						{ new: true }, 
-						(err, admin) => {
-						if(err) return console.error(err);
-						return res.json({ 
-							match, 
-							success: true, 
-							message: 'created new match successfully',
-						});
-					});
-				}
+				})
 			})
+
+			Admin.findByIdAndUpdate(req.session.userId, 
+				{ $push: { matches: match.id}}, 
+				{ new: true }, 
+				(err, admin) => {
+				if(err) return console.error(err);
+				return res.json({ 
+					match, 
+					success: true, 
+					message: 'created new match successfully',
+				});
+			});
 		}
 	})
+
+
+	// Match.findOne({}, (err, match) => {
+	// 	if(err) return res.send(err);
+	// 	if(!match) {
+	// 		var record = new Match();
+	// 		record.team1 = req.body.team1;
+	// 		record.team2 = req.body.team2;
+	// 		record.ground = req.body.ground;
+
+	// 		record.save((err, match) => {
+	// 			if(err) return console.error(err);
+	// 			if(match) {
+	// 				req.session.matchId = match._id;
+
+	// 				Team.findByIdAndUpdate(req.body.team1, 
+	// 					{ $push: {matchesId: match.id}}, 
+	// 					{new: true}, 
+	// 					(err, savedTeam1) => {
+
+	// 					if(err) return res.status(500).json({error: err});
+	// 					savedTeam1.players.forEach(id => {
+
+	// 						Player.findByIdAndUpdate(id, 
+	// 							{ $push: {numMatchesPlayed: match.id}}, 
+	// 							{new: true}, (err, player) => {
+	// 							if(err) return res.status(500).json({error: err});
+	// 						})
+	// 					})
+
+	// 					Team.findByIdAndUpdate(req.body.team2, 
+	// 						{ $push: {matchesId: match.id}}, 
+	// 						{new: true}, 
+	// 						(err, savedteam2) => {
+	// 						if(err) return res.status(500).json({error: err});
+							
+	// 						savedteam2.players.forEach(id => {
+
+	// 							Player.findByIdAndUpdate(id, 
+	// 								{ $push: {numMatchesPlayed: match.id}}, 
+	// 								{new: true}, 
+	// 								(err, player) => {
+										
+	// 							if(err) return res.status(500).json({error: err});
+	// 							})
+	// 						})
+	// 					})
+	// 				})
+
+	// 				Admin.findByIdAndUpdate(req.session.userId, 
+	// 					{ $push: { matches: match.id}}, 
+	// 					{ new: true }, 
+	// 					(err, admin) => {
+	// 					if(err) return console.error(err);
+	// 					return res.json({ 
+	// 						match, 
+	// 						success: true, 
+	// 						message: 'created new match successfully',
+	// 					});
+	// 				});
+	// 			}
+	// 		})
+	// 	}
+	// })
 }
 
 

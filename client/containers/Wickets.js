@@ -10,6 +10,7 @@ class Wickets extends Component {
 	state = {
 		newBatsmen: localStorage.getItem('newBatsmen') || '',
 		typeOfWicket: '',
+		isSelected: false,
 	}
 
 	handlingWicket = (e) => {
@@ -50,11 +51,12 @@ class Wickets extends Component {
 	}
 
 	selectNewBatsmen = (e) => {
-		this.setState({ newBatsmen : e.target.value});
+		this.setState({ newBatsmen : e.target.value, isSelected: true });
 	}
 
 
 	posttoAddNewBatsmen = () => {
+
 
 		var length = this.props.match.firstInnings.batsmanScoreCard.length + 1;
 		var id = this.props.match.firstInnings._id; 
@@ -62,14 +64,21 @@ class Wickets extends Component {
 		var data = { playerId: localStorage.getItem('newBatsmen'), position: length, inningsId: id }
 
 		this.props.dispatch(addNewBatsmen(data)).then(res => {
-			this.props.dispatch(getLiveScoreUpdate());
-			this.props.wicket(this.state.typeOfWicket);
+			this.props.dispatch(getLiveScoreUpdate()).then(response => {
+				this.props.wicket(this.state.typeOfWicket);
+				this.setState({ isSelected: false });
+				this.props.isWicket();
+				this.props.updateWicket();
+			});
 		});
 	}
 
 
 	render() {
 
+		var batsmenPlaying = this.props.match.firstInnings.batsmanScoreCard.filter(player => (!player.isOut && player.isBatted));
+
+		console.log(batsmenPlaying, ',..........playing 1')
 		localStorage.setItem('newBatsmen', this.state.newBatsmen);
 
 		const wickets = ['bowled', 'caughtOut', 'lbw', 'runout', 'stumped'];
@@ -78,17 +87,41 @@ class Wickets extends Component {
 
 		return(
 			<div>
-		
-				<div className='updatingScore'>
-					<h1 className='content is-large'>add wickets</h1>
-					{
-						wickets.map((typ, index) => {
-							return <button onClick={this.handlingWicket} className='button is-outlined' 
-							value={typ} key={index}>{typ}</button>
-						})
-						
-					}
-				</div>
+				{
+					this.props.wicketState ?  
+					(
+						<div>
+							<select onChange={this.selectNewBatsmen} name='newBatsmen'>
+								<option>select New batsmen</option>
+								{
+									batsmens.map((player, index) => {
+										return <option key={index} value={player._id}>{player.playerName}</option>
+									})
+								}
+							</select>
+							{
+								this.state.isSelected ? 
+								<button onClick={this.posttoAddNewBatsmen}>submit</button>
+								:
+								''
+							}
+						</div>
+					)
+					:
+					(
+						<div className='updatingScore'>
+							<h1 className='content is-large'>add wickets</h1>
+							{
+								wickets.map((typ, index) => {
+									return <button onClick={this.handlingWicket} className='button is-outlined' 
+									value={typ} key={index}>{typ}</button>
+								})
+								
+							}
+						</div>
+					)
+				}
+				
 			</div>
 		)
 	}

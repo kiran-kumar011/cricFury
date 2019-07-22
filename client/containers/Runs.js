@@ -142,7 +142,7 @@ class Runs extends Component {
 			isOverComplete 
 		};
 
-		console.log(data, 'before posting runs to the server');
+		// console.log(data, 'before posting runs to the server');
 
 		this.props.dispatch(addRunsToServer(data)).then(res => {
 			this.props.dispatch(getLiveScoreUpdate());
@@ -166,7 +166,7 @@ class Runs extends Component {
 
 
 	updateWicketFallen = () => {
-		this.setState({ isWicket: true })
+		this.setState({ isWicket: !this.state.isWicket });
 	}
 
 
@@ -222,6 +222,10 @@ class Runs extends Component {
 
 
 	render() {
+
+		var batsmenPlaying = this.props.match.firstInnings.batsmanScoreCard.filter(player => (!player.isOut && player.isBatted));
+
+
 		var overs = this.props.match.firstInnings ?  this.props.match.firstInnings.numOversBowled : 0;  
 
 		var bowlers = this.props.match.firstInnings ? this.props.match.firstInnings.bowlingTeamId.players : [];
@@ -241,6 +245,13 @@ class Runs extends Component {
 		return(
 			<div >
 				{
+					// this.props.numTotalOvers === this.props.firstInnings.numOversBowled ?
+					// <button>Start the second innings</button> 
+					// :
+					// <h1>hello</h1>
+					
+				}
+				{
 					this.state.isOverComplete  ? 
 					(
 						<div>
@@ -259,6 +270,16 @@ class Runs extends Component {
 						</div>
 					) 
 					:
+					batsmenPlaying.length === 1 ? 
+					(
+						<div>
+							<Wickets updateWicket={this.updateCurrentStriker}
+								isWicket={this.updateWicketFallen}
+								wicketState={this.state.isWicket} 
+								wicket={this.addingWicketsToBallsBowledArr} />
+						</div>
+					)
+					:
 					(
 						<div className="updatingScoreWrapper">
 							<div className='updatingScore'>
@@ -274,54 +295,12 @@ class Runs extends Component {
 							</div>
 							<div>
 								<Wickets updateWicket={this.updateCurrentStriker}
-									isWicket={this.updateWicketFallen} 
+									isWicket={this.updateWicketFallen}
+									wicketState={this.state.isWicket}
 									wicket={this.addingWicketsToBallsBowledArr} />
-							</div>	
+							</div>
 						</div>
-					) 
-				)
-				}
-
-				{
-					// this.state.isOverComplete  ? 
-					// (
-					// 	<div>
-					// 		<select className="select " name='bowler' onChange={this.submitNewBowler} >
-					// 			<option>select new bowler</option>
-					// 		{
-					// 			bowlers.map(bowlr => {
-					// 				return <option className='content is-large' key={bowlr._id} 
-					// 					value={bowlr._id}>
-					// 						{bowlr.playerName}
-					// 					</option>
-					// 			})
-					// 		}
-					// 		</select>
-					// 		<button onClick={this.postNewBowler}>submit</button>
-					// 	</div>
-					// ) 
-					// :
-					// (
-					// 	<div className="updatingScoreWrapper">
-					// 		<div className='updatingScore'>
-					// 			<h1 className='content is-large'>add runs</h1>
-					// 			{
-					// 				scores.map((num, index) => {
-					// 					return <button onClick={this.updateRuns} value={num} 
-					// 					className='button is-outlined' key={index}>
-					// 						{num}
-					// 					</button>
-					// 				})
-					// 			}
-					// 		</div>
-					// 		<div>
-					// 			<Wickets updateWicket={this.updateCurrentStriker}
-					// 				isWicket={this.updateWicketFallen} 
-					// 				wicket={this.addingWicketsToBallsBowledArr} />
-					// 		</div>	
-					// 	</div>
-					// ) 
-
+					)
 				}
 			</div>
 			
